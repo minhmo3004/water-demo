@@ -1,0 +1,18 @@
+.footer {
+  text-align: center;
+  padding: 20px;
+  background: #1e6bb8;
+  color: white;
+  position: fixed;
+  bottom: -10px;  /* Hạ footer xuống 10px */
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1001;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
+
+.footer p {
+  margin: 5px 0;
+  font-size: 14px;
+}

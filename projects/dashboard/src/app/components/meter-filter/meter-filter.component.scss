@@ -1,0 +1,31 @@
+
+.filter-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 20px;
+}
+
+label {
+  font-weight: 500;
+  color: #7d7b7b;
+}
+
+select,
+input[type="date"] {
+  padding: 6px 12px;
+  border-radius: 50px;
+  border: 1px solid #b0bec5;
+  font-size: 15px;
+}
+.filter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 10px;
+  padding-right: 20px;
+}
+
+.filter-left {
+  margin-right: 400px; /* tăng khoảng cách nếu muốn */
+}

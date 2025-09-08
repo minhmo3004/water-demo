@@ -1,0 +1,48 @@
+*{
+  box-sizing: border-box;
+
+}
+.main-rapper  {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.main-layout {
+  display: flex;
+  
+}
+
+.main-content {
+  flex: 1;
+  background: #f1fffc;
+  padding: 24px;
+}
+.header {
+  background: #1976d2;
+  color: #fff;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.dashboard-container {
+  background: #f9fbfd;
+  padding: 24px;
+  border-radius: 8px;
+}
+.meter-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.meter-table th, .meter-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #e3eaf2;
+  margin: 0;
+}

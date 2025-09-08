@@ -1,0 +1,254 @@
+<div class="dashboard-container">
+  <!-- Statistics Cards -->
+  <div class="stats-row">
+    <div class="stat-card anomaly-card">
+      <div class="stat-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-title">Bất thường được phát hiện</div>
+        <div class="stat-number">{{ totalAnomalies() }}</div>
+        <div class="stat-label">bất thường</div>
+      </div>
+    </div>
+
+    <div class="stat-card verified-card">
+      <div class="stat-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="stat-content">
+        <div class="stat-title">Bất thường được xác nhận</div>
+        <div class="stat-number">{{ totalVerifiedAnomalies() }}</div>
+        <div class="stat-label">xác nhận</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Section -->
+  <div class="main-content-section">
+    <!-- Data Table Section (40%) -->
+    <div class="table-section">
+      <div class="table-header">
+        <div class="header-title-row">
+          <h3 class="table-title">Dữ liệu đồng hồ trạm cấp nước</h3>
+        </div>
+        
+        
+        <div class="search-container">
+            <div class="search-box">
+              <i class="fas fa-search search-icon"></i>
+              <input
+                type="text"
+                placeholder="Search"
+                (input)="onSearchChange($event)"
+                class="search-input"
+              />
+            </div>
+        </div>
+        
+      </div>
+
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Tên trạm</th>
+              <th>Address</th>
+              <th>Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of filteredData(); trackBy: trackByFn">
+              <td class="station-name">
+                <span class="station-link" (click)="navigateToDetail(item)">
+                  {{ item.meter_data.name }}
+                </span>
+              </td>
+              <td class="address">{{ item.meter_data.address }}</td>
+              <td>
+                <span [class]="'status-badge ' + getStatusClass(item.meter_data.status)">
+                  {{ getStatusText(item.meter_data.status) }}
+                </span>
+              </td>
+            </tr>
+            <tr *ngIf="filteredData().length === 0">
+              <td colspan="3" class="no-data">Không có dữ liệu</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Van Dau 8 Detail Section (60%) -->
+    <div class="detail-section">
+      <div class="detail-header">
+        <h3 class="detail-title">Văn Đẩu 8</h3>
+      </div>
+
+      <div class="detail-content">
+        <!-- Chart Section -->
+        <div class="chart-section">
+          <!-- Chart Tabs -->
+          <div class="chart-tabs-container">
+            <div class="chart-tabs">
+              <button 
+                class="tab-button" 
+                [class.active]="isActiveTab('general')"
+                (click)="switchChartTab('general')">
+                Tổng quát
+              </button>
+              <button 
+                class="tab-button" 
+                [class.active]="isActiveTab('anomaly')"
+                (click)="switchChartTab('anomaly')">
+                Hiển thị bất thường
+              </button>
+              <button 
+                class="tab-button" 
+                [class.active]="isActiveTab('anomaly-ai')"
+                (click)="switchChartTab('anomaly-ai')">
+                Hiển thị bất thường - AI
+              </button>
+            </div>
+          </div>
+          
+          <!-- Chart Content -->
+          <div class="chart-content">
+            <!-- Chart Header Info -->
+            <div class="chart-header-info">
+              <h4 class="chart-main-title">{{ currentChartData().title }}</h4>
+              <p class="chart-subtitle">{{ currentChartData().subtitle }}</p>
+            </div>
+
+            <!-- Chart Legend -->
+            <div class="chart-legend">
+              <div 
+                class="legend-item" 
+                *ngFor="let legend of currentChartData().legend">
+                <div 
+                  class="legend-line" 
+                  [style.background-color]="legend.color"></div>
+                <span class="legend-text">{{ legend.label }}</span>
+              </div>
+            </div>
+            
+            <!-- Professional Chart -->
+            <div class="chart-wrapper">
+              <div class="chart-y-axis">
+                <div class="y-axis-label" data-value="40">40</div>
+                <div class="y-axis-label" data-value="30">30</div>
+                <div class="y-axis-label" data-value="20">20</div>
+                <div class="y-axis-label" data-value="10">10</div>
+                <div class="y-axis-label" data-value="0">0</div>
+              </div>
+              
+              <div class="chart-area">
+                <svg viewBox="0 0 900 350" class="flow-chart" preserveAspectRatio="xMidYMid meet">
+                  <!-- Background -->
+                  <rect width="100%" height="100%" fill="white"/>
+                  
+                  <!-- Grid lines -->
+                  <defs>
+                    <pattern id="gridPattern" width="50" height="35" patternUnits="userSpaceOnUse">
+                      <path d="M 50 0 L 0 0 0 35" fill="none" stroke="#f0f0f0" stroke-width="1"/>
+                    </pattern>
+                  </defs>
+                  <rect x="50" y="20" width="820" height="280" fill="url(#gridPattern)" />
+                  
+                  <!-- Horizontal grid lines -->
+                  <g stroke="#f0f0f0" stroke-width="1">
+                    <line x1="50" y1="300" x2="870" y2="300"/>
+                    <line x1="50" y1="230" x2="870" y2="230"/>
+                    <line x1="50" y1="160" x2="870" y2="160"/>
+                    <line x1="50" y1="90" x2="870" y2="90"/>
+                    <line x1="50" y1="20" x2="870" y2="20"/>
+                  </g>
+                  
+                  <!-- First line (dynamic color) -->
+                  <polyline 
+                    fill="none" 
+                    [attr.stroke]="currentChartData().legend[0].color" 
+                    stroke-width="2.5" 
+                    [attr.points]="currentChartData().originalPoints"/>
+                  
+                  <!-- Second line (dynamic color) -->
+                  <polyline 
+                    fill="none" 
+                    [attr.stroke]="currentChartData().legend[1].color" 
+                    stroke-width="2.5" 
+                    [attr.points]="currentChartData().reconstructedPoints"/>
+                    
+                  <!-- Data points for first line -->
+                  <g [attr.fill]="currentChartData().legend[0].color">
+                    <circle cx="70" cy="160" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    <circle cx="130" cy="200" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    <circle cx="190" cy="120" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    <circle cx="250" cy="150" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    <circle cx="310" cy="210" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    <circle cx="370" cy="80" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    <circle cx="430" cy="120" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    <circle cx="490" cy="160" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    <circle cx="550" cy="60" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    <circle cx="610" cy="100" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    <circle cx="670" cy="140" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    <circle cx="730" cy="40" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    <circle cx="790" cy="80" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    <circle cx="850" cy="120" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    
+                    <!-- Anomaly points -->
+                    <circle cx="70" cy="180" r="2" *ngIf="activeChartTab() === 'anomaly'"/>
+                    <circle cx="130" cy="180" r="2" *ngIf="activeChartTab() === 'anomaly'"/>
+                    <circle cx="190" cy="140" r="2" *ngIf="activeChartTab() === 'anomaly'"/>
+                    <circle cx="250" cy="170" r="2" *ngIf="activeChartTab() === 'anomaly'"/>
+                    <circle cx="310" cy="200" r="2" *ngIf="activeChartTab() === 'anomaly'"/>
+                    
+                    <!-- AI points -->
+                    <circle cx="70" cy="170" r="2" *ngIf="activeChartTab() === 'anomaly-ai'"/>
+                    <circle cx="130" cy="190" r="2" *ngIf="activeChartTab() === 'anomaly-ai'"/>
+                    <circle cx="190" cy="130" r="2" *ngIf="activeChartTab() === 'anomaly-ai'"/>
+                    <circle cx="250" cy="160" r="2" *ngIf="activeChartTab() === 'anomaly-ai'"/>
+                    <circle cx="310" cy="200" r="2" *ngIf="activeChartTab() === 'anomaly-ai'"/>
+                  </g>
+                  
+                  <!-- Data points for second line -->
+                  <g [attr.fill]="currentChartData().legend[1].color">
+                    <circle cx="70" cy="170" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    <circle cx="130" cy="210" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    <circle cx="190" cy="130" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    <circle cx="250" cy="160" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    <circle cx="310" cy="220" r="2" *ngIf="activeChartTab() === 'general'"/>
+                    
+                    <!-- Anomaly detected points (spikes) -->
+                    <circle cx="130" cy="300" r="3" *ngIf="activeChartTab() === 'anomaly'"/>
+                    <circle cx="220" cy="280" r="3" *ngIf="activeChartTab() === 'anomaly'"/>
+                    <circle cx="310" cy="290" r="3" *ngIf="activeChartTab() === 'anomaly'"/>
+                    <circle cx="400" cy="270" r="3" *ngIf="activeChartTab() === 'anomaly'"/>
+                    <circle cx="490" cy="260" r="3" *ngIf="activeChartTab() === 'anomaly'"/>
+                    
+                    <!-- AI confidence points -->
+                    <circle cx="70" cy="175" r="2" *ngIf="activeChartTab() === 'anomaly-ai'"/>
+                    <circle cx="130" cy="195" r="2" *ngIf="activeChartTab() === 'anomaly-ai'"/>
+                    <circle cx="190" cy="135" r="2" *ngIf="activeChartTab() === 'anomaly-ai'"/>
+                    <circle cx="250" cy="165" r="2" *ngIf="activeChartTab() === 'anomaly-ai'"/>
+                    <circle cx="310" cy="205" r="2" *ngIf="activeChartTab() === 'anomaly-ai'"/>
+                  </g>
+                </svg>
+              </div>
+              
+              <!-- X-axis labels -->
+              <div class="chart-x-axis">
+                <span class="x-axis-label">2024-04-17</span>
+                <span class="x-axis-label">2024-04-25</span>
+                <span class="x-axis-label">2024-05-03</span>
+                <span class="x-axis-label">2024-05-11</span>
+                <span class="x-axis-label">2024-05-19</span>
+                <span class="x-axis-label">2024-05-27</span>
+                <span class="x-axis-label">2024-06-01</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,69 @@
+.topbar {
+  background: linear-gradient(90deg, #1e6bb8 0%, #2980b9 100%);
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 60px; /* Đảm bảo height cố định */
+}
+
+.topbar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  max-width: 100%;
+}
+
+.title {
+  color: white;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  flex: 1;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 4px;
+  margin: 0 20px;
+  min-width: 300px;
+}
+
+.search-input {
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 8px 15px;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+}
+
+
+.user-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.notification-btn,
+.menu-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.notification-btn:hover,
+.menu-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}

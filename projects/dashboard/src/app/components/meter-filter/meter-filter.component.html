@@ -1,0 +1,12 @@
+<div class="filter-row">
+<div class="filter-left">
+  <label class ="khu vuc">Khu vực:</label>
+  <select [ngModel]="selectedMeter" (ngModelChange)="meterChange.emit($event)">
+    <option *ngFor="let meter of meters" [value]="meter">{{meter}}</option>
+  </select>
+</div>
+<div class="filter-right">
+  <label>Chọn ngày:</label>
+  <input type="date" [ngModel]="selectedDate" (ngModelChange)="dateChange.emit($event)">
+</div>
+</div>

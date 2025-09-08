@@ -1,0 +1,16 @@
+<div class="main-rapper">
+ <app-header></app-header> <!-- thanh tiêu đề trên cùng của ứng dụng -->
+
+ <div class="main-layout"> <!-- chia bố cục chính thành hai phần  -->
+
+   <app-sidebar></app-sidebar><!-- Hiển thị thanh menu bên trái (sidebar). -->
+
+    <div class="main-content"> <!-- Vùng hiển thị nội dung chính -->
+
+   
+     <router-outlet></router-outlet>
+    </div>
+ </div>
+ 
+ <app-footer></app-footer> <!-- hiển thị footer ở cuối trang -->
+</div>

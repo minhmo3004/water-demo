@@ -1,0 +1,675 @@
+// ========================================
+// MAIN DASHBOARD COMPONENT STYLES
+// ========================================
+
+// ========================================
+// 1. MAIN CONTAINER
+// ========================================
+.dashboard-container {
+  padding: 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+// ========================================
+// 2. STATISTICS CARDS SECTION
+// ========================================
+
+// Stats Row Container
+.stats-row {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+// Individual Stat Card
+.stat-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex: 1;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Stat Card Elements
+.stat-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+}
+
+.anomaly-card .stat-icon {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+}
+
+.verified-card .stat-icon {
+  background: linear-gradient(135deg, #4ecdc4, #44a08d);
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-title {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.stat-number {
+  font-size: 36px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #888;
+  font-weight: 500;
+}
+
+// ========================================
+// 3. MAIN CONTENT LAYOUT
+// ========================================
+.main-content-section {
+  display: flex;
+  gap: 24px;
+  height: calc(100vh - 300px);
+  min-height: 500px;
+}
+
+// ========================================
+// 4. DATA TABLE SECTION (LEFT - 40%)
+// ========================================
+
+// Table Container
+.table-section {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 40%;
+  flex-shrink: 0;
+}
+
+// Table Header
+.table-header {
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.header-title-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.table-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+// Search Components
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.search-box {
+  position: relative;
+  width: 280px;
+  max-width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  font-size: 14px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px 12px 44px;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  background: white;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+  &:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+}
+
+// Data Table Styles
+.table-container {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+
+  thead {
+    background: #f8f9fa;
+  }
+
+  th {
+    padding: 16px 24px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    color: #555;
+    border-bottom: 2px solid #e1e5e9;
+  }
+
+  td {
+    padding: 16px 24px;
+    border-bottom: 1px solid #f1f3f4;
+    font-size: 14px;
+    color: #333;
+  }
+
+  tbody tr {
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #f8f9fa;
+    }
+  }
+}
+
+// Table Cell Specific Styles
+.station-name {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.station-link {
+  cursor: pointer;
+  color: #667eea;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  font-weight: 600;
+
+  &:hover {
+    color: #764ba2;
+    text-decoration: underline;
+  }
+}
+
+.address {
+  color: #666;
+}
+
+.flow-rate {
+  font-weight: 500;
+  color: #2c3e50;
+  text-align: right;
+}
+
+.no-data {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  padding: 40px 24px;
+}
+
+// ========================================
+// 5. DETAIL SECTION (RIGHT - 60%)
+// ========================================
+
+// Detail Container
+.detail-section {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-header {
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.detail-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.detail-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+// ========================================
+// 6. CHART SECTION
+// ========================================
+
+// Chart Container
+.chart-section {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+// Chart Tabs Container
+.chart-tabs-container {
+  flex-shrink: 0;
+}
+
+.chart-tabs {
+  display: flex;
+  gap: 4px;
+  background: #f5f5f5;
+  padding: 4px;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.tab-button {
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+
+  &.active {
+    background: white;
+    color: #4285f4;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+  }
+
+  &:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.7);
+    color: #333;
+  }
+}
+
+// Chart Content
+.chart-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+// Chart Header Info
+.chart-header-info {
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.chart-main-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+}
+
+.chart-subtitle {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+  margin: 0;
+}
+
+// Chart Legend
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 16px;
+  padding: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+
+.legend-line {
+  width: 24px;
+  height: 3px;
+  border-radius: 2px;
+
+}
+
+// Professional Chart Wrapper
+.chart-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+}
+
+// Y-axis
+.chart-y-axis {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+  position: absolute;
+  left: 10px;
+  height: 280px;
+  top: 40px;
+  z-index: 2;
+}
+
+.y-axis-label {
+  font-size: 11px;
+  color: #666;
+  font-weight: 500;
+  text-align: right;
+  padding-right: 8px;
+}
+
+// Chart Area
+.chart-area {
+  flex: 1;
+  position: relative;
+  margin-left: 30px;
+}
+
+.flow-chart {
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  border-radius: 8px;
+}
+
+// X-axis
+.chart-x-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  margin-left: 30px;
+  padding: 0 50px;
+}
+
+.x-axis-label {
+  font-size: 11px;
+  color: #666;
+  font-weight: 500;
+  transform: rotate(-45deg);
+  transform-origin: center;
+  white-space: nowrap;
+}
+
+// ========================================
+// 7. STATUS & CONFIDENCE BADGES
+// ========================================
+
+// Status Badges
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-normal {
+  background-color: #08ef3e;
+  color: #155724;
+}
+
+.status-anomaly {
+  background-color: #f8d7da;
+  color: #b81424;
+}
+
+.status-lost {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-unknown {
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+// Confidence Badges
+.confidence-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.confidence-high {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.confidence-medium {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.confidence-low {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+// ========================================
+// 8. RESPONSIVE DESIGN
+// ========================================
+
+// Tablet Breakpoint (1200px and below)
+@media (max-width: 1200px) {
+  .main-content-section {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .table-section,
+  .detail-section {
+    width: 100%;
+  }
+
+  .table-section {
+    max-height: 400px;
+  }
+
+  .detail-section {
+    min-height: 500px;
+  }
+}
+
+// Mobile Breakpoint (768px and below)
+@media (max-width: 768px) {
+  // Main Container
+  .dashboard-container {
+    padding: 16px;
+  }
+
+  // Statistics Section
+  .stats-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .stat-card {
+    padding: 20px;
+  }
+
+  .stat-number {
+    font-size: 28px;
+  }
+
+  // Main Content Layout
+  .main-content-section {
+    gap: 16px;
+    flex-direction: column;
+    height: auto;
+  }
+
+  .table-section,
+  .detail-section {
+    width: 100%;
+  }
+
+  // Headers
+  .table-header,
+  .detail-header {
+    padding: 16px;
+    gap: 12px;
+  }
+  
+  .table-header {
+    flex-direction: column;
+  }
+
+  // Search
+  .search-box {
+    width: 100%;
+  }
+
+  // Data Table
+  .data-table {
+    min-width: 700px;
+
+    th,
+    td {
+      padding: 12px 8px;
+      font-size: 12px;
+    }
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+  // Chart Section
+  .detail-content {
+    padding: 16px;
+  }
+
+  .chart-content {
+    padding: 16px;
+  }
+
+  .chart-tabs {
+    flex-wrap: wrap;
+    gap: 2px;
+  }
+
+  .tab-button {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .chart-legend {
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 8px;
+  }
+
+  .legend-item {
+    font-size: 12px;
+  }
+
+  .legend-line {
+    width: 20px;
+  }
+
+  .chart-wrapper {
+    min-height: 250px;
+  }
+
+  .chart-y-axis {
+    height: 220px;
+    left: 5px;
+  }
+
+  .y-axis-label {
+    font-size: 10px;
+  }
+
+  .chart-area {
+    margin-left: 25px;
+  }
+
+  .flow-chart {
+    min-height: 250px;
+  }
+
+  .x-axis-label {
+    font-size: 9px;
+    transform: rotate(-60deg);
+  }
+
+  .chart-x-axis {
+    margin-left: 25px;
+    padding: 0 30px;
+  }
+}
