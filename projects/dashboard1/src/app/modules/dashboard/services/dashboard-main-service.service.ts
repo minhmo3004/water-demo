@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { DashBoardData } from '../models';
 import { Observable, of } from 'rxjs';
 
@@ -8,8 +6,6 @@ import { Observable, of } from 'rxjs';
   providedIn: 'root'
 })
 export class DashboardMainServiceService {
-  private apiUrl = '';
-  http = inject(HttpClient);
 
   private MockDashBoardData: DashBoardData[] = [
   {
@@ -18,7 +14,7 @@ export class DashboardMainServiceService {
     anomaly_verified: 5,
     meter_data: {
       id: 1,
-      name: 'Van Dau 9',
+      name: 'Van Dau 8',
       address: 'Abc',
       status: 1
     }
@@ -29,7 +25,7 @@ export class DashboardMainServiceService {
     anomaly_verified: 2,
     meter_data: {
       id: 2,
-      name: 'Van Dau 10',
+      name: 'Van Dau 9',
       address: 'Xyz',
       status: 0
     }
@@ -40,7 +36,7 @@ export class DashboardMainServiceService {
     anomaly_verified: 6,
     meter_data: {
       id: 3,
-      name: 'Van Dau 11',
+      name: 'Van Dau 10',
       address: '123 Street',
       status: 1
     }
@@ -51,7 +47,7 @@ export class DashboardMainServiceService {
     anomaly_verified: 1,
     meter_data: {
       id: 4,
-      name: 'Van Dau 12',
+      name: 'Van Dau 11',
       address: 'Main Road',
       status: 0
     }
@@ -62,7 +58,7 @@ export class DashboardMainServiceService {
     anomaly_verified: 7,
     meter_data: {
       id: 5,
-      name: 'Van Dau 13',
+      name: 'Van Dau 12',
       address: 'Central Ave',
       status: 1
     }
@@ -73,7 +69,7 @@ export class DashboardMainServiceService {
     anomaly_verified: 3,
     meter_data: {
       id: 6,
-      name: 'Van Dau 14',
+      name: 'Van Dau 13',
       address: 'North Street',
       status: 0
     }
@@ -84,7 +80,7 @@ export class DashboardMainServiceService {
     anomaly_verified: 5,
     meter_data: {
       id: 7,
-      name: 'Van Dau 15',
+      name: 'Van Dau 14',
       address: 'South Park',
       status: 1
     }
@@ -95,7 +91,7 @@ export class DashboardMainServiceService {
     anomaly_verified: 0,
     meter_data: {
       id: 8,
-      name: 'Van Dau 16',
+      name: 'Van Dau 15',
       address: 'West Lane',
       status: 0
     }
@@ -106,7 +102,7 @@ export class DashboardMainServiceService {
     anomaly_verified: 8,
     meter_data: {
       id: 9,
-      name: 'Van Dau 17',
+      name: 'Van Dau 16',
       address: 'East Road',
       status: 1
     }
@@ -117,7 +113,7 @@ export class DashboardMainServiceService {
     anomaly_verified: 0,
     meter_data: {
       id: 10,
-      name: 'Van Dau 18',
+      name: 'Van Dau 17',
       address: 'Downtown',
       status: 0
     }
@@ -128,7 +124,7 @@ export class DashboardMainServiceService {
     anomaly_verified: 9,
     meter_data: {
       id: 11,
-      name: 'Van Dau 19',
+      name: 'Van Dau 18',
       address: 'Uptown',
       status: 1
     }
@@ -137,10 +133,6 @@ export class DashboardMainServiceService {
 
   getMockData(): Observable<DashBoardData[]> {
     return of(this.MockDashBoardData);
-  }
-
-  getDataApi() {
-    return this.http.get<DashBoardData[]>((`${this.apiUrl}`));
   }
 
   constructor() { }

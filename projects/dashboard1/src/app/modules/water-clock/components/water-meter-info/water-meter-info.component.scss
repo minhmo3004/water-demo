@@ -1,0 +1,325 @@
+.water-meter-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #f8f9fa;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 0 4px;
+
+  .header-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+
+    i {
+      color: white;
+      font-size: 18px;
+    }
+  }
+
+  .page-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0;
+  }
+}
+
+.filter-section {
+  display: flex;
+  
+  margin-bottom: 24px;
+  align-items: center;
+
+  .search-container {
+    margin-right: 370px;
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+
+    .search-input {
+      width: 100%;
+      padding: 12px 16px 12px 44px;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      font-size: 14px;
+      background: white;
+      transition: border-color 0.2s ease;
+
+      &:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      &::placeholder {
+        color: #a0aec0;
+      }
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #a0aec0;
+      font-size: 14px;
+    }
+  }
+
+  .filter-dropdown {
+    margin-right: 80px;
+    .status-filter {
+      padding: 12px 16px;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      font-size: 14px;
+      background: white;
+      color: #4a5568;
+      cursor: pointer;
+      transition: border-color 0.2s ease;
+
+      &:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+    }
+  }
+
+  .export-btn {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+// Table Container - Quan trọng cho scroll
+.table-container {
+  flex: 1;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; // Quan trọng để flexbox hoạt động đúng
+}
+
+.table-wrapper {
+  flex: 1;
+  overflow-y: auto; // Cho phép scroll dọc
+  overflow-x: auto; // Cho phép scroll ngang nếu cần
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+    
+    &:hover {
+      background: #a8a8a8;
+    }
+  }
+}
+
+.water-meter-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+
+  thead {
+    background: #f7fafc;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    th {
+      padding: 16px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #4a5568;
+      border-bottom: 1px solid #e2e8f0;
+      white-space: nowrap;
+
+      &.checkbox-column {
+        width: 50px;
+        text-align: center;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: #f7fafc;
+      }
+
+      &.selected {
+        background-color: #ebf4ff;
+      }
+
+      td {
+        padding: 16px 12px;
+        border-bottom: 1px solid #e2e8f0;
+        vertical-align: middle;
+
+        &.checkbox-column {
+          text-align: center;
+          width: 50px;
+        }
+
+        &.name-column {
+          font-weight: 500;
+          color: #2d3748;
+        }
+
+        &.address-column {
+          color: #4a5568;
+        }
+
+        &.status-column {
+          .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+
+            &.status-normal {
+              background-color: #c6f6d5;
+              color: #22543d;
+            }
+
+            &.status-fixing {
+              background-color: #fed7d7;
+              color: #c53030;
+            }
+
+            &.status-anomaly {
+              background-color: #fbb6ce;
+              color: #97266d;
+            }
+          }
+        }
+
+        &.date-column {
+          color: #4a5568;
+          font-family: 'Courier New', monospace;
+        }
+
+        &.actions-column {
+          text-align: center;
+          width: 80px;
+
+          .action-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+
+            &:hover {
+              background: #5a67d8;
+              transform: scale(1.1);
+            }
+
+            i {
+              font-size: 12px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.table-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #667eea;
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .filter-section {
+    flex-direction: column;
+    align-items: stretch;
+
+    .search-container {
+      max-width: none;
+    }
+
+    .export-btn {
+      align-self: flex-start;
+    }
+  }
+
+  .water-meter-table {
+    font-size: 12px;
+
+    thead th,
+    tbody td {
+      padding: 12px 8px;
+    }
+
+    .status-badge {
+      font-size: 10px !important;
+      padding: 4px 8px !important;
+    }
+  }
+}
+
+// Animation cho loading state
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: #a0aec0;
+}

@@ -23,6 +23,7 @@ export class MainComponentComponent implements OnInit {
   
   // Chart state management
   activeChartTab = signal<'general' | 'anomaly' | 'anomaly-ai'>('general');
+  
 
   // Computed signals for statistics
   totalAnomalies = computed(() =>
@@ -135,9 +136,6 @@ export class MainComponentComponent implements OnInit {
     return item.id;
   }
 
-  navigateToDetail(item: DashBoardData) {
-    this.router.navigate(['/detail', item.meter_data.id, item.meter_data.name]);
-  }
 
   // Chart tab methods
   switchChartTab(tab: 'general' | 'anomaly' | 'anomaly-ai') {
@@ -147,4 +145,5 @@ export class MainComponentComponent implements OnInit {
   isActiveTab(tab: 'general' | 'anomaly' | 'anomaly-ai'): boolean {
     return this.activeChartTab() === tab;
   }
+
 }

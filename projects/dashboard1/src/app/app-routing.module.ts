@@ -13,6 +13,10 @@ const routes: Routes = [
   {
     path: 'detail/:id/:name',
     loadComponent: () => import('./modules/meter-manager/components/details/details.component').then(m => m.DetailsComponent)
+  },
+  {
+    path: 'water-clock',
+    loadComponent: () => import('./modules/water-clock/components/water-meter-info/water-meter-info.component').then(m => m.WaterMeterInfoComponent)
   }
 ];
 

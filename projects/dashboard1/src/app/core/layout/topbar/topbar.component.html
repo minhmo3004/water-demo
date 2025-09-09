@@ -2,9 +2,33 @@
   <div class="topbar-content">
     <h2 class="title">HP WATER CO</h2>
     <div class="user-actions">
-      <button class="notification-btn">
-        <i class="fas fa-bell"></i>
-      </button>
+      <div class="notification-container">
+        <button class="notification-btn" (click)="toggleNotification()">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge" *ngIf="notificationCount() > 0">{{ notificationCount() }}</span>
+        </button>
+        
+        <!-- Notification Dropdown -->
+        <div class="notification-dropdown" [class.show]="showNotification()">
+          <div class="notification-content">
+            <div class="notification-header">
+              <div class="notification-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <div class="notification-info">
+                <h4 class="notification-title">05 New anomalies detected</h4>
+                <p class="notification-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+              </div>
+            </div>
+            <div class="notification-actions">
+              <button class="view-reports-btn" (click)="viewReports()">
+                View Reports
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       <button class="menu-btn">
         <i class="fas fa-bars"></i>
       </button>

@@ -7,7 +7,7 @@
 // ========================================
 .dashboard-container {
   padding: 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #4c49ff;
   min-height: 100vh;
   max-height: 100vh;
   overflow: hidden;
@@ -40,8 +40,8 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   }
 }
 
@@ -174,8 +174,8 @@
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 
   &:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
   }
 }
 
@@ -190,30 +190,30 @@
   background: white;
 
   thead {
-    background: #f8f9fa;
-  }
+  background: #f8f9fa;
+}
 
   th {
-    padding: 16px 24px;
-    text-align: left;
-    font-weight: 600;
-    font-size: 14px;
-    color: #555;
-    border-bottom: 2px solid #e1e5e9;
-  }
+  padding: 16px 24px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+  color: #555;
+  border-bottom: 2px solid #e1e5e9;
+}
 
   td {
-    padding: 16px 24px;
-    border-bottom: 1px solid #f1f3f4;
-    font-size: 14px;
-    color: #333;
-  }
+  padding: 16px 24px;
+  border-bottom: 1px solid #f1f3f4;
+  font-size: 14px;
+  color: #333;
+}
 
   tbody tr {
-    transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease;
 
     &:hover {
-      background-color: #f8f9fa;
+  background-color: #f8f9fa;
     }
   }
 }
@@ -224,17 +224,9 @@
   color: #2c3e50;
 }
 
-.station-link {
-  cursor: pointer;
-  color: #667eea;
-  text-decoration: none;
-  transition: color 0.3s ease;
+.station-text {
+  color: #2c3e50;
   font-weight: 600;
-
-  &:hover {
-    color: #764ba2;
-    text-decoration: underline;
-  }
 }
 
 .address {
@@ -276,6 +268,21 @@
   background: rgba(255, 255, 255, 0.8);
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.header-title-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.header-tabs-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .detail-title {
@@ -283,6 +290,51 @@
   font-weight: 600;
   color: #2c3e50;
   margin: 0;
+}
+
+// Header Tabs Styling
+.header-tabs {
+  display: flex;
+  width: 100%;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.04);
+  padding: 4px;
+  border-radius: 10px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.header-tab-button {
+  flex: 1;
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  position: relative;
+  text-align: center;
+  
+  &.active {
+    background: white;
+    color: #4285f4;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
+    font-weight: 600;
+    transform: translateY(-1px);
+  }
+
+  &:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.6);
+    color: #333;
+    transform: translateY(-0.5px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
 }
 
 .detail-content {
@@ -376,30 +428,7 @@
   margin: 0;
 }
 
-// Chart Legend
-.chart-legend {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  margin-bottom: 16px;
-  padding: 12px;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: #666;
-  font-weight: 500;
-}
-
-.legend-line {
-  width: 24px;
-  height: 3px;
-  border-radius: 2px;
-
-}
+// Chart Legend is now integrated into SVG
 
 // Professional Chart Wrapper
 .chart-wrapper {
@@ -409,37 +438,20 @@
   min-height: 300px;
 }
 
-// Y-axis
-.chart-y-axis {
-  display: flex;
-  flex-direction: column-reverse;
-  justify-content: space-between;
-  position: absolute;
-  left: 10px;
-  height: 280px;
-  top: 40px;
-  z-index: 2;
-}
-
-.y-axis-label {
-  font-size: 11px;
-  color: #666;
-  font-weight: 500;
-  text-align: right;
-  padding-right: 8px;
-}
-
-// Chart Area
-.chart-area {
+// Chart Container with Grid
+.chart-container-with-grid {
   flex: 1;
   position: relative;
-  margin-left: 30px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  margin: 4px;
 }
 
 .flow-chart {
   width: 100%;
   height: 100%;
-  min-height: 300px;
+  min-height: 350px;
   border-radius: 8px;
 }
 
@@ -447,9 +459,8 @@
 .chart-x-axis {
   display: flex;
   justify-content: space-between;
-  margin-top: 12px;
-  margin-left: 30px;
-  padding: 0 50px;
+  margin-top: 8px;
+  padding: 0 50px 0 80px;
 }
 
 .x-axis-label {
@@ -589,6 +600,21 @@
     flex-direction: column;
   }
 
+  .header-title-row,
+  .header-tabs-row {
+    justify-content: flex-start;
+  }
+
+  .header-tabs {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .header-tab-button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
   // Search
   .search-box {
     width: 100%;
@@ -628,39 +654,19 @@
     font-size: 12px;
   }
 
-  .chart-legend {
-    flex-wrap: wrap;
-    gap: 16px;
-    padding: 8px;
-  }
-
-  .legend-item {
-    font-size: 12px;
-  }
-
-  .legend-line {
-    width: 20px;
-  }
+  // Legend now integrated in SVG, no separate styling needed
 
   .chart-wrapper {
     min-height: 250px;
   }
 
-  .chart-y-axis {
-    height: 220px;
-    left: 5px;
-  }
-
-  .y-axis-label {
-    font-size: 10px;
-  }
-
-  .chart-area {
-    margin-left: 25px;
+  .chart-container-with-grid {
+    border-radius: 6px;
+    margin: 2px;
   }
 
   .flow-chart {
-    min-height: 250px;
+    min-height: 280px;
   }
 
   .x-axis-label {
@@ -669,7 +675,6 @@
   }
 
   .chart-x-axis {
-    margin-left: 25px;
-    padding: 0 30px;
+    padding: 0 30px 0 60px;
   }
 }
