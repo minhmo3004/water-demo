@@ -1,0 +1,274 @@
+.chart-view-page {
+  min-height: calc(100vh - 140px);
+  background: #f8f9fa;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+}
+
+.exit-btn-fixed {
+  position: fixed;
+  top: 65px; // Dưới topbar
+  left: 255px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
+
+  i {
+    font-size: 18px;
+  }
+}
+
+.chart-content-wrapper {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+.chart-tabs {
+  display: flex;
+  background: rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+  .tab-btn {
+    flex: 1;
+    padding: 16px 20px;
+    border: none;
+    background: transparent;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-bottom: 2px solid transparent;
+
+    &:hover {
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+    }
+
+    &.active {
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+
+    i {
+      font-size: 14px;
+    }
+  }
+}
+
+.main-chart-section {
+  padding: 32px;
+
+  .chart-header-info {
+    margin-bottom: 24px;
+    text-align: center;
+
+    .chart-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin: 0 0 8px 0;
+    }
+
+    .chart-desc {
+      color: #666;
+      font-size: 14px;
+      margin: 0;
+    }
+  }
+
+  .chart-wrapper-large {
+    background: white;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+    .chart-container-with-grid {
+      width: 100%;
+      height: 500px; // Tăng từ 350px lên 500px
+      margin-bottom: 20px;
+
+      .flow-chart-large {
+        width: 100%;
+        height: 100%;
+        
+        .chart-legend-group {
+          rect {
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+          }
+          
+          text {
+            font-size: 13px;
+            font-weight: 500;
+          }
+        }
+
+        .main-line {
+          stroke-width: 3; // Tăng từ 2 lên 3
+          stroke-linecap: round;
+          stroke-linejoin: round;
+          filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .secondary-line {
+          stroke-width: 2.5; // Tăng từ 2 lên 2.5
+          stroke-linecap: round;
+          stroke-linejoin: round;
+        }
+
+        .data-point {
+          transition: all 0.3s ease;
+
+          &:hover {
+            r: 5; // Tăng từ 4 lên 5
+          }
+
+          &.secondary {
+            &:hover {
+              r: 4; // Tăng từ 3 lên 4
+            }
+          }
+        }
+
+        // Tăng kích thước Y-axis labels
+        g[fill="#666"] text {
+          font-size: 12px;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .chart-x-axis-large {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 70px 0 70px;
+      margin-top: 16px;
+
+      .x-axis-label {
+        font-size: 12px; // Tăng từ 11px lên 12px
+        color: #666;
+        font-family: Arial, sans-serif;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+
+// Responsive Design
+@media (max-width: 768px) {
+  .chart-view-page {
+    padding: 16px;
+  }
+
+  .exit-btn-fixed {
+    top: 70px;
+    left: 16px;
+    width: 44px;
+    height: 44px;
+
+    i {
+      font-size: 16px;
+    }
+  }
+
+  .chart-tabs {
+    .tab-btn {
+      padding: 12px 8px;
+      font-size: 12px;
+      flex-direction: column;
+      gap: 4px;
+    }
+  }
+
+  .main-chart-section {
+    padding: 20px;
+
+    .chart-header-info {
+      margin-bottom: 20px;
+
+      .chart-title {
+        font-size: 20px;
+      }
+
+      .chart-desc {
+        font-size: 13px;
+      }
+    }
+
+    .chart-wrapper-large {
+      padding: 20px;
+
+      .chart-container-with-grid {
+        height: 380px; // Tăng từ 280px lên 380px cho mobile
+      }
+
+      .chart-x-axis-large {
+        padding: 0 20px;
+
+        .x-axis-label {
+          font-size: 10px;
+          writing-mode: vertical-rl;
+          text-orientation: mixed;
+        }
+      }
+    }
+  }
+}
+
+// Print Styles
+@media print {
+  .chart-view-page {
+    background: white;
+    padding: 0;
+  }
+
+  .exit-btn-fixed {
+    display: none;
+  }
+
+  .chart-tabs {
+    display: none;
+  }
+}
+
+// Animation for smooth transitions
+.main-chart-section {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,167 @@
+<div class="chart-view-page">
+  <!-- Nút thoát cố định -->
+  <button class="exit-btn-fixed" (click)="goBack()" title="Quay lại">
+    <i class="fas fa-arrow-left"></i>
+  </button>
+
+  <!-- Chart Content -->
+  <div class="chart-content-wrapper">
+    <!-- Chart Tabs -->
+    <div class="chart-tabs">
+      <button 
+        class="tab-btn"
+        [class.active]="activeChartTab() === 'general'"
+        (click)="setActiveTab('general')"
+      >
+        <i class="fas fa-chart-line"></i>
+        Tổng quát
+      </button>
+      <button 
+        class="tab-btn"
+        [class.active]="activeChartTab() === 'anomaly'"
+        (click)="setActiveTab('anomaly')"
+      >
+        <i class="fas fa-exclamation-triangle"></i>
+        Hiển thị bất thường
+      </button>
+      <button 
+        class="tab-btn"
+        [class.active]="activeChartTab() === 'anomaly-ai'"
+        (click)="setActiveTab('anomaly-ai')"
+      >
+        <i class="fas fa-robot"></i>
+        Hiển thị bất thường - AI
+      </button>
+    </div>
+
+    <!-- Main Chart Section -->
+    <div class="main-chart-section">
+      <!-- Chart Header Info -->
+      <div class="chart-header-info">
+        <h4 class="chart-title">{{ currentChartData().title }}</h4>
+        <p class="chart-desc">{{ currentChartData().subtitle }}</p>
+      </div>
+      
+      <!-- Professional Chart (Enlarged) -->
+      <div class="chart-wrapper-large">
+        <div class="chart-container-with-grid">
+          <svg viewBox="0 0 900 450" class="flow-chart-large" preserveAspectRatio="xMidYMid meet">
+            <!-- Background -->
+            <rect width="100%" height="100%" fill="white"/>
+            
+            <!-- Chart border -->
+            <rect x="70" y="30" width="800" height="380" fill="none" stroke="#e0e0e0" stroke-width="2"/>
+            
+            <!-- Horizontal grid lines -->
+            <g stroke="#f0f0f0" stroke-width="1">
+              <line x1="70" y1="410" x2="870" y2="410"/>
+              <line x1="70" y1="315" x2="870" y2="315"/>
+              <line x1="70" y1="220" x2="870" y2="220"/>
+              <line x1="70" y1="125" x2="870" y2="125"/>
+              <line x1="70" y1="30" x2="870" y2="30"/>
+            </g>
+            
+            <!-- Vertical grid lines -->
+            <g stroke="#f0f0f0" stroke-width="1">
+              <line x1="185" y1="30" x2="185" y2="410"/>
+              <line x1="300" y1="30" x2="300" y2="410"/>
+              <line x1="415" y1="30" x2="415" y2="410"/>
+              <line x1="530" y1="30" x2="530" y2="410"/>
+              <line x1="645" y1="30" x2="645" y2="410"/>
+              <line x1="760" y1="30" x2="760" y2="410"/>
+              <line x1="870" y1="30" x2="870" y2="410"/>
+            </g>
+            
+            <!-- Y-axis labels -->
+            <g fill="#666" font-size="14" font-family="Arial, sans-serif">
+              <text x="60" y="415" text-anchor="end">0</text>
+              <text x="60" y="320" text-anchor="end">10</text>
+              <text x="60" y="225" text-anchor="end">20</text>
+              <text x="60" y="130" text-anchor="end">30</text>
+              <text x="60" y="35" text-anchor="end">40</text>
+            </g>
+
+            <!-- Legend inside chart -->
+            <g class="chart-legend-group">
+              <rect x="100" y="50" width="200" height="60" fill="white" stroke="#e0e0e0" stroke-width="1" rx="5"/>
+              
+              <!-- Legend items -->
+              <g *ngFor="let item of currentChartData().legend; let i = index">
+                <line 
+                  [attr.x1]="110" 
+                  [attr.y1]="70 + i * 20" 
+                  [attr.x2]="130" 
+                  [attr.y2]="70 + i * 20" 
+                  [attr.stroke]="item.color" 
+                  stroke-width="3"
+                />
+                <text 
+                  [attr.x]="140" 
+                  [attr.y]="75 + i * 20" 
+                  fill="#333" 
+                  font-size="12" 
+                  font-family="Arial, sans-serif"
+                >
+                  {{ item.label }}
+                </text>
+              </g>
+            </g>
+            
+            <!-- Main data line -->
+            <polyline
+              [attr.points]="currentChartData().originalPoints"
+              fill="none"
+              [attr.stroke]="currentChartData().legend[0].color"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="main-line"
+            />
+            
+            <!-- Secondary data line -->
+            <polyline
+              [attr.points]="currentChartData().reconstructedPoints"
+              fill="none"
+              [attr.stroke]="currentChartData().legend[1].color"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-dasharray="5,5"
+              class="secondary-line"
+            />
+            
+            <!-- Data points for main line -->
+            <g [attr.fill]="currentChartData().legend[0].color">
+              <circle *ngFor="let point of getDataPoints(currentChartData().originalPoints)" 
+                      [attr.cx]="point.x" 
+                      [attr.cy]="point.y" 
+                      r="4"
+                      class="data-point"/>
+            </g>
+            
+            <!-- Data points for secondary line -->
+            <g [attr.fill]="currentChartData().legend[1].color">
+              <circle *ngFor="let point of getDataPoints(currentChartData().reconstructedPoints)" 
+                      [attr.cx]="point.x" 
+                      [attr.cy]="point.y" 
+                      r="3"
+                      class="data-point secondary"/>
+            </g>
+          </svg>
+        </div>
+        
+        <!-- X-axis labels -->
+        <div class="chart-x-axis-large">
+          <span class="x-axis-label">2024-04-17</span>
+          <span class="x-axis-label">2024-04-25</span>
+          <span class="x-axis-label">2024-05-03</span>
+          <span class="x-axis-label">2024-05-11</span>
+          <span class="x-axis-label">2024-05-19</span>
+          <span class="x-axis-label">2024-05-27</span>
+          <span class="x-axis-label">2024-06-01</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

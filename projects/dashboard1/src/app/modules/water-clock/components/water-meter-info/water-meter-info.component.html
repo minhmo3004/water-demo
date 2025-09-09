@@ -60,35 +60,147 @@
           </tr>
         </thead>
         <tbody>
-          <tr 
-            *ngFor="let meter of filteredMeters(); trackBy: trackByMeterId"
-            class="table-row"
-            [class.selected]="meter.selected"
-          >
-            <td class="checkbox-column">
-              <input 
-                type="checkbox" 
-                [checked]="meter.selected || false"
-                (change)="onSelectMeter(meter.id)"
-                class="table-checkbox"
-              >
-            </td>
-            <td class="name-column">{{ meter.name }}</td>
-            <td class="address-column">{{ meter.address }}</td>
-            <td class="status-column">
-              <span class="status-badge" [ngClass]="getStatusClass(meter.status)">
-                {{ meter.status }}
-              </span>
-            </td>
-            <td class="date-column">{{ meter.joinDate }}</td>
-            <td class="actions-column">
-              <button class="action-btn" (click)="viewDetails(meter.id)">
-                <i class="fas fa-chevron-down"></i>
-              </button>
-            </td>
-          </tr>
+          <ng-container *ngFor="let meter of filteredMeters(); trackBy: trackByMeterId">
+            <!-- Main Row -->
+            <tr 
+              class="table-row"
+              [class.selected]="meter.selected"
+              [class.expanded]="meter.expanded"
+            >
+              <td class="checkbox-column">
+                <input 
+                  type="checkbox" 
+                  [checked]="meter.selected || false"
+                  (change)="onSelectMeter(meter.id)"
+                  class="table-checkbox"
+                >
+              </td>
+              <td class="name-column">{{ meter.name }}</td>
+              <td class="address-column">{{ meter.address }}</td>
+              <td class="status-column">
+                <span class="status-badge" [ngClass]="getStatusClass(meter.status)">
+                  {{ meter.status }}
+                </span>
+              </td>
+              <td class="date-column">{{ meter.joinDate }}</td>
+              <td class="actions-column">
+                <button 
+                  class="action-btn" 
+                  (click)="viewDetails(meter.id)"
+                  [class.rotated]="meter.expanded"
+                >
+                  <i class="fas fa-chevron-down"></i>
+                </button>
+              </td>
+            </tr>
+            
+            <!-- Detail Row -->
+            <tr 
+              class="detail-row" 
+              *ngIf="meter.expanded"
+              [@slideInOut]
+            >
+              <td colspan="6" class="detail-content">
+                <div class="detail-container">
+                  <div class="detail-header">
+                    <h4 class="detail-title">Thông tin chi tiết</h4>
+                  </div>
+                  
+                  <div class="detail-body">
+                    <div class="detail-info-grid">
+                      <div class="detail-item">
+                        <span class="detail-label">Name:</span>
+                        <span class="detail-value">{{ meter.name }}</span>
+                      </div>
+                      
+                      <div class="detail-item">
+                        <span class="detail-label">Address:</span>
+                        <span class="detail-value">{{ meter.address }}</span>
+                      </div>
+                      
+                      <div class="detail-item">
+                        <span class="detail-label">Status:</span>
+                        <span class="detail-value">
+                          <span class="status-badge" [ngClass]="getStatusClass(meter.status)">
+                            {{ meter.status }}
+                          </span>
+                        </span>
+                      </div>
+                      
+                      <div class="detail-item">
+                        <span class="detail-label">Anomaly Detected:</span>
+                        <span class="detail-value anomaly-count">{{ meter.anomalyDetected || 0 }}</span>
+                      </div>
+                    </div>
+                    
+                    <div class="detail-actions">
+                      <button 
+                        class="detail-btn primary"
+                        (click)="viewChart(meter.id)"
+                      >
+                        <i class="fas fa-chart-line"></i>
+                        Xem biểu đồ
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
         </tbody>
       </table>
+    </div>
+  </div>
+
+  <!-- Export Popup -->
+  <div class="popup-overlay" *ngIf="showExportPopup()" (click)="closeExportPopup()">
+    <div class="popup-container" (click)="$event.stopPropagation()">
+      <!-- No Selection Case -->
+      <div *ngIf="!hasSelectedMeters()" class="popup-content">
+        <div class="popup-icon warning">
+          <i class="fas fa-exclamation"></i>
+        </div>
+        <h3 class="popup-title">Chưa chọn đồng hồ nào</h3>
+        <div class="popup-actions">
+          <button class="popup-btn cancel" (click)="closeExportPopup()">
+            Cancel
+          </button>
+        </div>
+      </div>
+
+      <!-- Confirmation Case -->
+      <div *ngIf="hasSelectedMeters()" class="popup-content">
+        <div class="popup-icon confirm">
+          <i class="fas fa-file-export"></i>
+        </div>
+        <h3 class="popup-title">Xác nhận xuất file dữ liệu</h3>
+        <p class="popup-message">Bạn có chắc chắn muốn xuất những file dữ liệu này không?</p>
+        <div class="popup-actions">
+          <button class="popup-btn cancel" (click)="closeExportPopup()">
+            Hủy
+          </button>
+          <button class="popup-btn confirm" (click)="confirmExport()">
+            Xác nhận
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Notification -->
+  <div class="notification-overlay" *ngIf="showSuccessNotification()" (click)="closeSuccessNotification()">
+    <div class="notification-container" (click)="$event.stopPropagation()">
+      <div class="notification-content">
+        <div class="notification-icon success">
+          <i class="fas fa-check"></i>
+        </div>
+        <h3 class="notification-title">Cập nhật thành công</h3>
+        <div class="notification-actions">
+          <button class="notification-btn ok" (click)="closeSuccessNotification()">
+            OK
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

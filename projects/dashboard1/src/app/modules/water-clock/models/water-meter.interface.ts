@@ -5,6 +5,8 @@ export interface WaterMeter {
   status: 'Normal' | 'On fixing' | 'Anomaly detected';
   joinDate: string;
   selected?: boolean;
+  expanded?: boolean;
+  anomalyDetected?: number;
 }
 
 export interface WaterMeterFilter {

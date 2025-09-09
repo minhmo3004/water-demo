@@ -17,6 +17,10 @@ const routes: Routes = [
   {
     path: 'water-clock',
     loadComponent: () => import('./modules/water-clock/components/water-meter-info/water-meter-info.component').then(m => m.WaterMeterInfoComponent)
+  },
+  {
+    path: 'chart/:id/:name',
+    loadComponent: () => import('./modules/water-clock/components/chart-view/chart-view.component').then(m => m.ChartViewComponent)
   }
 ];
 
