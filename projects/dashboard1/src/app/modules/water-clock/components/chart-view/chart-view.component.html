@@ -36,6 +36,18 @@
 
     <!-- Main Chart Section -->
     <div class="main-chart-section">
+      
+      <!-- Prediction Button (only show for anomaly tabs) -->
+      <button 
+        *ngIf="shouldShowPredictionButton()" 
+        class="prediction-toggle-btn"
+        (click)="togglePredictionPopup()"
+        title="Dữ liệu dự đoán thời gian thực"
+      >
+        <i class="fas fa-chart-bar"></i>
+        <span>Dự đoán</span>
+      </button>
+
       <!-- Chart Header Info -->
       <div class="chart-header-info">
         <h4 class="chart-title">{{ currentChartData().title }}</h4>
@@ -162,6 +174,52 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- Prediction Popup Modal -->
+  <div 
+    class="prediction-popup-overlay" 
+    *ngIf="showPredictionPopup()"
+    (click)="closePredictionPopup()"
+  >
+    <div 
+      class="prediction-popup-modal" 
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Popup Header -->
+      <div class="prediction-popup-header">
+        <h3 class="popup-title">Dữ liệu dự đoán thời gian thực</h3>
+        <button class="close-btn" (click)="closePredictionPopup()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <!-- Popup Content -->
+      <div class="prediction-popup-content">
+        <div class="prediction-table-container">
+          <!-- Table Header -->
+          <div class="popup-table-header">
+            <div class="popup-header-cell">Thời gian</div>
+            <div class="popup-header-cell">Lưu lượng</div>
+            <div class="popup-header-cell">Trạng thái</div>
+          </div>
+
+          <!-- Table Body -->
+          <div class="popup-table-body">
+            <div 
+              class="popup-table-row" 
+              *ngFor="let item of predictionData(); trackBy: trackByPredictionId"
+            >
+              <div class="popup-data-cell time-cell">{{ item.thoi_gian }}</div>
+              <div class="popup-data-cell flow-cell">{{ item.luu_luong }}</div>
+              <div class="popup-data-cell status-cell">
+                <span class="popup-status-indicator">{{ item.trang_thai }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

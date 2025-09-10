@@ -2,6 +2,7 @@ import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { PredictionData } from '../../models';
 
 @Component({
   selector: 'app-chart-view',
@@ -17,6 +18,21 @@ export class ChartViewComponent implements OnInit {
   
   // Chart state management
   activeChartTab = signal<'general' | 'anomaly' | 'anomaly-ai'>('general');
+  
+  // Prediction popup state
+  showPredictionPopup = signal<boolean>(false);
+  
+  // Prediction data
+  predictionData = signal<PredictionData[]>([
+    { id: '1', thoi_gian: '**********', luu_luong: '**********', trang_thai: 'Bình thường' },
+    { id: '2', thoi_gian: '**********', luu_luong: '**********', trang_thai: 'Bình thường' },
+    { id: '3', thoi_gian: '**********', luu_luong: '**********', trang_thai: 'Bình thường' },
+    { id: '4', thoi_gian: '**********', luu_luong: '**********', trang_thai: 'Bình thường' },
+    { id: '5', thoi_gian: '**********', luu_luong: '**********', trang_thai: 'Bình thường' },
+    { id: '6', thoi_gian: '**********', luu_luong: '**********', trang_thai: 'Bình thường' },
+    { id: '7', thoi_gian: '**********', luu_luong: '**********', trang_thai: 'Bình thường' },
+    { id: '8', thoi_gian: '*****', luu_luong: '******', trang_thai: 'Bình thường' },
+  ]);
   
   constructor(
     private router: Router,
@@ -101,5 +117,25 @@ export class ChartViewComponent implements OnInit {
       const [x, y] = point.split(',').map(Number);
       return { x, y };
     });
+  }
+
+  // Check if prediction button should be visible
+  shouldShowPredictionButton(): boolean {
+    return this.activeChartTab() === 'anomaly' || this.activeChartTab() === 'anomaly-ai';
+  }
+
+  // Toggle prediction popup
+  togglePredictionPopup(): void {
+    this.showPredictionPopup.set(!this.showPredictionPopup());
+  }
+
+  // Close prediction popup
+  closePredictionPopup(): void {
+    this.showPredictionPopup.set(false);
+  }
+
+  // TrackBy function for prediction data
+  trackByPredictionId(index: number, item: PredictionData): string {
+    return item.id;
   }
 }

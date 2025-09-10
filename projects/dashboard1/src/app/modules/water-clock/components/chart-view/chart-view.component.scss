@@ -83,6 +83,42 @@
 
 .main-chart-section {
   padding: 32px;
+  position: relative; // For positioning the prediction button
+  
+  // Prediction Toggle Button
+  .prediction-toggle-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    z-index: 10;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    i {
+      font-size: 12px;
+    }
+
+    span {
+      font-size: 11px;
+      white-space: nowrap;
+    }
+  }
 
   .chart-header-info {
     margin-bottom: 24px;
@@ -179,6 +215,226 @@
   }
 }
 
+// Prediction Popup Modal Styles
+.prediction-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.prediction-popup-modal {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow: hidden;
+  animation: slideInUp 0.3s ease-out;
+
+  .prediction-popup-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    .popup-title {
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .close-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+      }
+
+      i {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .prediction-popup-tabs {
+    display: flex;
+    background: rgba(248, 249, 250, 0.8);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+    .popup-tab-btn {
+      flex: 1;
+      padding: 16px 20px;
+      border: none;
+      background: transparent;
+      color: #666;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 2px solid transparent;
+
+      &:hover {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+      }
+
+      &.active {
+        color: #667eea;
+        background: rgba(102, 126, 234, 0.1);
+        border-bottom-color: #667eea;
+      }
+    }
+  }
+
+  .prediction-popup-content {
+    padding: 24px;
+    max-height: 500px;
+    overflow-y: auto;
+
+    // Custom scrollbar
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+      border-radius: 3px;
+
+      &:hover {
+        background: linear-gradient(180deg, #5a67d8 0%, #6b46c1 100%);
+      }
+    }
+
+    .prediction-table-container {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+
+      .popup-table-header {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+        .popup-header-cell {
+          padding: 16px 20px;
+          font-size: 14px;
+          font-weight: 600;
+          color: white;
+          text-align: center;
+          border-right: 1px solid rgba(255, 255, 255, 0.2);
+
+          &:last-child {
+            border-right: none;
+          }
+        }
+      }
+
+      .popup-table-body {
+        .popup-table-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          border-bottom: 1px solid #e2e8f0;
+          transition: background-color 0.2s ease;
+
+          &:hover {
+            background: rgba(102, 126, 234, 0.05);
+          }
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          .popup-data-cell {
+            padding: 16px 20px;
+            font-size: 13px;
+            text-align: center;
+            border-right: 1px solid #e2e8f0;
+
+            &:last-child {
+              border-right: none;
+            }
+
+            &.time-cell {
+              color: #4a5568;
+              font-family: 'Courier New', monospace;
+              letter-spacing: 0.5px;
+            }
+
+            &.flow-cell {
+              color: #2d3748;
+              font-weight: 500;
+              letter-spacing: 0.5px;
+            }
+
+            &.status-cell {
+              .popup-status-indicator {
+                padding: 6px 12px;
+                background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+                color: #22543d;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
 
 // Responsive Design
 @media (max-width: 768px) {
@@ -208,6 +464,17 @@
 
   .main-chart-section {
     padding: 20px;
+
+    .prediction-toggle-btn {
+      top: 16px;
+      right: 16px;
+      padding: 6px 10px;
+      font-size: 11px;
+      
+      span {
+        font-size: 10px;
+      }
+    }
 
     .chart-header-info {
       margin-bottom: 20px;
@@ -254,6 +521,66 @@
 
   .chart-tabs {
     display: none;
+  }
+
+  .prediction-popup-modal {
+    width: 95%;
+    max-width: 600px;
+    max-height: 90vh;
+
+    .prediction-popup-header {
+      padding: 16px 20px;
+
+      .popup-title {
+        font-size: 16px;
+      }
+
+      .close-btn {
+        width: 28px;
+        height: 28px;
+
+        i {
+          font-size: 12px;
+        }
+      }
+    }
+
+    .prediction-popup-tabs {
+      .popup-tab-btn {
+        padding: 12px 16px;
+        font-size: 12px;
+      }
+    }
+
+    .prediction-popup-content {
+      padding: 16px;
+      max-height: 400px;
+
+      .prediction-table-container {
+        .popup-table-header {
+          .popup-header-cell {
+            padding: 12px 16px;
+            font-size: 12px;
+          }
+        }
+
+        .popup-table-body {
+          .popup-table-row {
+            .popup-data-cell {
+              padding: 12px 16px;
+              font-size: 11px;
+
+              &.status-cell {
+                .popup-status-indicator {
+                  font-size: 10px;
+                  padding: 4px 8px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 
