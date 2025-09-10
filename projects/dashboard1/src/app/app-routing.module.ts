@@ -21,6 +21,10 @@ const routes: Routes = [
   {
     path: 'chart/:id/:name',
     loadComponent: () => import('./modules/water-clock/components/chart-view/chart-view.component').then(m => m.ChartViewComponent)
+  },
+  {
+    path: 'break-history',
+    loadComponent: () => import('./modules/beak-history/components/break-history/break-history.component').then(m => m.BreakHistoryComponent)
   }
 ];
 

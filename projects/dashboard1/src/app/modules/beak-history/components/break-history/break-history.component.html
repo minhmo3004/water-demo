@@ -1,10 +1,10 @@
-<div class="water-meter-page">
+<div class="break-history-page">
   <!-- Header Section -->
   <div class="page-header">
     <div class="header-icon">
-      <i class="fas fa-tachometer-alt"></i>
+      <i class="fas fa-history"></i>
     </div>
-    <h1 class="page-title">Thông tin đồng hồ</h1>
+    <h1 class="page-title">Lịch sử vỡ</h1>
   </div>
 
   <!-- Search and Filter Section -->
@@ -42,7 +42,7 @@
   <div class="table-container">
     <!-- Fixed Header -->
     <div class="table-header-fixed">
-      <table class="water-meter-table header-table">
+      <table class="break-history-table header-table">
         <thead>
           <tr>
             <th class="checkbox-column">
@@ -53,11 +53,11 @@
                 class="table-checkbox"
               >
             </th>
-            <th>Name</th>
+            <th>Clock</th>
             <th>Address</th>
             <th>Status</th>
-            <th>Join date</th>
-            <th>Actions</th>
+            <th>Date</th>
+            <th>Detail</th>
           </tr>
         </thead>
       </table>
@@ -65,89 +65,95 @@
 
     <!-- Scrollable Body -->
     <div class="table-body-scrollable">
-      <table class="water-meter-table body-table">
+      <table class="break-history-table body-table">
         <tbody>
-          <ng-container *ngFor="let meter of filteredMeters(); trackBy: trackByMeterId">
+          <ng-container *ngFor="let history of filteredHistories(); trackBy: trackByHistoryId">
             <!-- Main Row -->
             <tr 
               class="table-row"
-              [class.selected]="meter.selected"
-              [class.expanded]="meter.expanded"
+              [class.selected]="history.selected"
+              [class.expanded]="history.expanded"
             >
               <td class="checkbox-column">
                 <input 
                   type="checkbox" 
-                  [checked]="meter.selected || false"
-                  (change)="onSelectMeter(meter.id)"
+                  [checked]="history.selected || false"
+                  (change)="onItemSelect(history.id)"
                   class="table-checkbox"
                 >
               </td>
-              <td class="name-column">{{ meter.name }}</td>
-              <td class="address-column">{{ meter.address }}</td>
+              <td class="clock-column">{{ history.clock }}</td>
+              <td class="address-column">{{ history.address }}</td>
               <td class="status-column">
-                <span class="status-badge" [ngClass]="getStatusClass(meter.status)">
-                  {{ meter.status }}
+                <span class="status-badge" [ngClass]="getStatusClass(history.status)">
+                  {{ history.status }}
                 </span>
               </td>
-              <td class="date-column">{{ meter.joinDate }}</td>
+              <td class="date-column">{{ history.date }}</td>
               <td class="actions-column">
                 <button 
-                  class="action-btn" 
-                  (click)="viewDetails(meter.id)"
-                  [class.rotated]="meter.expanded"
+                  class="action-btn detail-btn"
+                  (click)="viewDetails(history.id)"
+                  [class.rotated]="history.expanded"
+                  title="Xem chi tiết"
                 >
                   <i class="fas fa-chevron-down"></i>
                 </button>
               </td>
             </tr>
-            
+
             <!-- Detail Row -->
             <tr 
-              class="detail-row" 
-              *ngIf="meter.expanded"
+              class="detail-row"
+              *ngIf="history.expanded"
               [@slideInOut]
             >
               <td colspan="6" class="detail-content">
                 <div class="detail-container">
                   <div class="detail-header">
-                    <h4 class="detail-title">Thông tin chi tiết</h4>
+                    <h4 class="detail-title">Thông tin chi tiết lịch sử vỡ</h4>
                   </div>
-                  
+
                   <div class="detail-body">
                     <div class="detail-info-grid">
                       <div class="detail-item">
                         <span class="detail-label">Name:</span>
-                        <span class="detail-value">{{ meter.name }}</span>
+                        <span class="detail-value">{{ history.clock }}</span>
                       </div>
-                      
+
                       <div class="detail-item">
                         <span class="detail-label">Address:</span>
-                        <span class="detail-value">{{ meter.address }}</span>
+                        <span class="detail-value">{{ history.address }}</span>
                       </div>
-                      
+
                       <div class="detail-item">
                         <span class="detail-label">Status:</span>
                         <span class="detail-value">
-                          <span class="status-badge" [ngClass]="getStatusClass(meter.status)">
-                            {{ meter.status }}
+                          <span class="status-badge" [ngClass]="getStatusClass(history.status)">
+                            {{ history.status }}
                           </span>
                         </span>
                       </div>
-                      
+
                       <div class="detail-item">
-                        <span class="detail-label">Anomaly Detected:</span>
-                        <span class="detail-value anomaly-count">{{ meter.anomalyDetected || 0 }}</span>
+                        <span class="detail-label">Break:</span>
+                        <span class="detail-value break-count">{{ history.break }} (time)</span>
                       </div>
-                    </div>
-                    
-                    <div class="detail-actions">
-                      <button 
-                        class="detail-btn primary"
-                        (click)="viewChart(meter.id)"
-                      >
-                        <i class="fas fa-chart-line"></i>
-                        Xem biểu đồ
-                      </button>
+
+                      <div class="detail-item">
+                        <span class="detail-label">Pipe material:</span>
+                        <span class="detail-value">{{ history.pipeMaterial }}</span>
+                      </div>
+
+                      <div class="detail-item">
+                        <span class="detail-label">Pipe length:</span>
+                        <span class="detail-value">{{ history.pipeLength }} (m)</span>
+                      </div>
+
+                      <div class="detail-item">
+                        <span class="detail-label">Latest repair:</span>
+                        <span class="detail-value date-value">{{ history.latestRepair }}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -163,11 +169,11 @@
   <div class="popup-overlay" *ngIf="showExportPopup()" (click)="closeExportPopup()">
     <div class="popup-container" (click)="$event.stopPropagation()">
       <!-- No Selection Case -->
-      <div *ngIf="!hasSelectedMeters()" class="popup-content">
+      <div *ngIf="!hasSelectedHistories()" class="popup-content">
         <div class="popup-icon warning">
           <i class="fas fa-exclamation"></i>
         </div>
-        <h3 class="popup-title">Chưa chọn đồng hồ nào</h3>
+        <h3 class="popup-title">Chưa chọn lịch sử nào</h3>
         <div class="popup-actions">
           <button class="popup-btn cancel" (click)="closeExportPopup()">
             Cancel
@@ -176,12 +182,12 @@
       </div>
 
       <!-- Confirmation Case -->
-      <div *ngIf="hasSelectedMeters()" class="popup-content">
+      <div *ngIf="hasSelectedHistories()" class="popup-content">
         <div class="popup-icon confirm">
           <i class="fas fa-file-export"></i>
         </div>
         <h3 class="popup-title">Xác nhận xuất file dữ liệu</h3>
-        <p class="popup-message">Bạn có chắc chắn muốn xuất những file dữ liệu này không?</p>
+        <p class="popup-message">Bạn có chắc chắn muốn xuất những file dữ liệu lịch sử này không?</p>
         <div class="popup-actions">
           <button class="popup-btn cancel" (click)="closeExportPopup()">
             Hủy
