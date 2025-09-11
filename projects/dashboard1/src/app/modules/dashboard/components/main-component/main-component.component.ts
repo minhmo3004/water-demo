@@ -5,6 +5,8 @@ import { DashBoardData, Status } from '../../models';
 import { catchError } from 'rxjs/internal/operators/catchError';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ChartDataService } from '../../../../core/services/chart-data.service';
+import { ChartType } from '../../../../core/models/chart-data.interface';
 
 @Component({
   selector: 'app-main-component',
@@ -18,11 +20,12 @@ export class MainComponentComponent implements OnInit {
 
   dashBoardService = inject(DashboardMainServiceService);
   router = inject(Router);
+  private chartDataService = inject(ChartDataService);
   allData = signal<DashBoardData[]>([]);
   searchTerm = signal<string>('');
   
-  // Chart state management
-  activeChartTab = signal<'general' | 'anomaly' | 'anomaly-ai'>('general');
+  // Chart state management (dùng chung qua service)
+  chartState = this.chartDataService.getState();
   selectedMeterId = signal<number | null>(null);
   selectedMeterName = signal<string | null>(null);
   
@@ -47,51 +50,8 @@ export class MainComponentComponent implements OnInit {
     );
   });
 
-  // Chart data for different tabs
-  generalChartData = computed(() => ({
-    title: `Biểu đồ lưu lượng${this.selectedMeterName() ? ` - ${this.selectedMeterName()}` : ''}`,
-    subtitle: 'Original vs Reconstructed Flow (2024-04-17 to 2024-06-01)',
-    legend: [
-      { key: 'original', label: 'Original Flow', color: '#4285f4' },
-      { key: 'reconstructed', label: 'Reconstructed Flow', color: '#ff9800' }
-    ],
-    originalPoints: "70,160 100,140 130,200 160,170 190,120 220,190 250,150 280,100 310,210 340,140 370,80 400,180 430,120 460,70 490,160 520,110 550,60 580,150 610,100 640,50 670,140 700,90 730,40 760,130 790,80 820,30 850,120",
-    reconstructedPoints: "70,170 100,150 130,210 160,180 190,130 220,200 250,160 280,110 310,220 340,150 370,90 400,190 430,130 460,80 490,170 520,120 550,70 580,160 610,110 640,60 670,150 700,100 730,50 760,140 790,90 820,40 850,130"
-  }));
-
-  anomalyChartData = computed(() => ({
-    title: `Phân tích bất thường${this.selectedMeterName() ? ` - ${this.selectedMeterName()}` : ''}`,
-    subtitle: 'Anomaly Detection Results (2024-04-17 to 2024-06-01)',
-    legend: [
-      { key: 'normal', label: 'Normal Flow', color: '#4caf50' },
-      { key: 'anomaly', label: 'Anomaly Detected', color: '#f44336' }
-    ],
-    originalPoints: "70,180 100,160 130,180 160,170 190,140 220,160 250,170 280,120 310,200 340,160 370,100 400,190 430,140 460,90 490,180 520,130 550,80 580,170 610,120 640,70 670,160 700,110 730,60 760,150 790,100 820,50 850,140",
-    reconstructedPoints: "70,180 100,160 130,300 160,170 190,140 220,280 250,170 280,120 310,290 340,160 370,100 400,270 430,140 460,90 490,260 520,130 550,80 580,250 610,120 640,70 670,240 700,110 730,60 760,230 790,100 820,50 850,220"
-  }));
-
-  anomalyAiChartData = computed(() => ({
-    title: `Phân tích AI${this.selectedMeterName() ? ` - ${this.selectedMeterName()}` : ''}`,
-    subtitle: 'AI-Enhanced Anomaly Detection (2024-04-17 to 2024-06-01)',
-    legend: [
-      { key: 'predicted', label: 'AI Predicted', color: '#9c27b0' },
-      { key: 'confidence', label: 'Confidence Level', color: '#ff5722' }
-    ],
-    originalPoints: "70,170 100,150 130,190 160,160 190,130 220,180 250,160 280,110 310,200 340,150 370,90 400,180 430,130 460,80 490,170 520,120 550,70 580,160 610,110 640,60 670,150 700,100 730,50 760,140 790,90 820,40 850,130",
-    reconstructedPoints: "70,175 100,155 130,195 160,165 190,135 220,185 250,165 280,115 310,205 340,155 370,95 400,185 430,135 460,85 490,175 520,125 550,75 580,165 610,115 640,65 670,155 700,105 730,55 760,145 790,95 820,45 850,135"
-  }));
-
-  // Current chart data based on active tab
-  currentChartData = computed(() => {
-    switch (this.activeChartTab()) {
-      case 'anomaly':
-        return this.anomalyChartData();
-      case 'anomaly-ai':
-        return this.anomalyAiChartData();
-      default:
-        return this.generalChartData();
-    }
-  });
+  // Dữ liệu biểu đồ dùng chung từ service
+  currentChartData = computed(() => this.chartState().chartData);
 
   ngOnInit() {
     this.dashBoardService.getMockData().pipe(
@@ -141,11 +101,11 @@ export class MainComponentComponent implements OnInit {
 
   // Chart tab methods
   switchChartTab(tab: 'general' | 'anomaly' | 'anomaly-ai') {
-    this.activeChartTab.set(tab);
+    this.chartDataService.changeChartType(tab);
   }
 
   isActiveTab(tab: 'general' | 'anomaly' | 'anomaly-ai'): boolean {
-    return this.activeChartTab() === tab;
+    return this.chartState().activeChartType === tab;
   }
 
   // Meter selection
@@ -165,59 +125,50 @@ export class MainComponentComponent implements OnInit {
 
   // Cập nhật dữ liệu biểu đồ cho trạm được chọn
   private updateChartDataForMeter(item: DashBoardData): void {
-    // Tạo dữ liệu ngẫu nhiên nhưng có quy luật cho trạm
-    const baseValue = 15 + (item.meter_data.id % 10) * 2; // Giá trị cơ bản dựa trên ID
-    const variance = item.anomaly_count > 0 ? 8 : 4; // Độ biến thiên lớn hơn nếu có bất thường
-
-    // Cập nhật các điểm dữ liệu
-    const points = Array.from({ length: 27 }, (_, i) => {
-      const x = 70 + i * 30;
-      const noise = (Math.random() - 0.5) * variance;
-      const trend = Math.sin(i * 0.2) * variance;
-      const y = 200 - (baseValue + noise + trend) * 5;
-      return `${x},${Math.round(y)}`;
-    });
-
-    // Cập nhật dữ liệu cho từng loại biểu đồ
-    this.updateChartPoints(points.join(' '));
+    this.chartDataService.selectMeter(item.meter_data.id, item.meter_data.name);
   }
 
-  // Cập nhật điểm dữ liệu cho tất cả các loại biểu đồ
-  private updateChartPoints(basePoints: string): void {
-    const offsetPoints = basePoints.split(' ').map(point => {
-      const [x, y] = point.split(',').map(Number);
-      return `${x},${y + 10}`;
+  // Không cần tự tạo points — dùng service chung
+
+  // Helper để vẽ SVG (dùng trong template)
+  getPolylinePoints(data: Array<{ timestamp: string; value: number; predictedValue?: number }>, key: 'value' | 'predictedValue'): string {
+    if (!data || data.length === 0) return '';
+    return data.map((point, index) => {
+      const x = this.getXCoordinate(index, data.length);
+      const raw = key === 'value' ? point.value : (point.predictedValue ?? point.value);
+      const y = this.getYCoordinate(raw);
+      return `${x},${y}`;
     }).join(' ');
-
-    // Cập nhật các signal computed (sẽ tự động cập nhật giao diện)
-    this.generalChartData = computed(() => ({
-      ...this.generalChartData(),
-      originalPoints: basePoints,
-      reconstructedPoints: offsetPoints
-    }));
-
-    this.anomalyChartData = computed(() => ({
-      ...this.anomalyChartData(),
-      originalPoints: basePoints,
-      reconstructedPoints: this.addAnomalySpikes(basePoints)
-    }));
-
-    this.anomalyAiChartData = computed(() => ({
-      ...this.anomalyAiChartData(),
-      originalPoints: basePoints,
-      reconstructedPoints: this.addAnomalySpikes(basePoints, true)
-    }));
   }
 
-  // Thêm các điểm bất thường vào dữ liệu
-  private addAnomalySpikes(points: string, isAI: boolean = false): string {
-    return points.split(' ').map((point, i) => {
-      const [x, y] = point.split(',').map(Number);
-      if (i % 7 === 3) { // Tạo spike định kỳ
-        const spikeHeight = isAI ? 40 : 80;
-        return `${x},${y - spikeHeight}`;
-      }
-      return point;
-    }).join(' ');
+  getXAxisLabels(data: Array<{ timestamp: string }>): string[] {
+    if (!data || data.length === 0) return [];
+    const totalLabels = 7;
+    const step = Math.max(1, Math.floor(data.length / totalLabels));
+    const labels: string[] = [];
+    for (let i = 0; i < data.length; i += step) {
+      labels.push(data[i].timestamp);
+    }
+    if (labels[labels.length - 1] !== data[data.length - 1].timestamp) {
+      labels[labels.length - 1] = data[data.length - 1].timestamp;
+    }
+    return labels;
+  }
+
+  private getXCoordinate(index: number, totalPoints: number): number {
+    const chartWidth = 800;
+    const margin = 70;
+    if (totalPoints <= 1) return margin;
+    const step = chartWidth / (totalPoints - 1);
+    return margin + (index * step);
+  }
+
+  private getYCoordinate(value: number): number {
+    const chartHeight = 280;
+    const margin = 30;
+    const maxValue = 40;
+    const clamped = Math.max(0, Math.min(maxValue, value));
+    const scale = chartHeight / maxValue;
+    return margin + (chartHeight - (clamped * scale));
   }
 }

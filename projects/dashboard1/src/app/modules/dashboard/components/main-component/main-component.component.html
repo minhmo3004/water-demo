@@ -126,8 +126,14 @@
           <div class="chart-content">
             <!-- Chart Header Info -->
             <div class="chart-header-info">
-              <h4 class="chart-main-title">{{ currentChartData().title }}</h4>
-              <p class="chart-subtitle">{{ currentChartData().subtitle }}</p>
+              <ng-container *ngIf="chartState().chartData as cd; else noData">
+                <h4 class="chart-main-title">{{ cd.config.title }}</h4>
+                <p class="chart-subtitle">{{ cd.config.subtitle }}</p>
+              </ng-container>
+              <ng-template #noData>
+                <h4 class="chart-main-title">Chưa có dữ liệu</h4>
+                <p class="chart-subtitle"></p>
+              </ng-template>
             </div>
             
             <!-- Professional Chart -->
@@ -171,71 +177,25 @@
                   </g>
 
                   <!-- Legend inside chart -->
-                  <g class="chart-legend-group">
+                  <g class="chart-legend-group" *ngIf="chartState().chartData as cd">
                     <!-- Legend background -->
-                    <rect x="90" y="45" width="200" height="50" fill="white" stroke="#e0e0e0" stroke-width="1" rx="4"/>
-                    
-                    <!-- Original Flow legend -->
-                    <line x1="100" y1="60" x2="120" y2="60" [attr.stroke]="currentChartData().legend[0].color" stroke-width="3"/>
-                    <text x="125" y="64" fill="#333" font-size="12" font-family="Arial, sans-serif">{{ currentChartData().legend[0].label }}</text>
-                    
-                    <!-- Reconstructed Flow legend -->
-                    <line x1="100" y1="80" x2="120" y2="80" [attr.stroke]="currentChartData().legend[1].color" stroke-width="3"/>
-                    <text x="125" y="84" fill="#333" font-size="12" font-family="Arial, sans-serif">{{ currentChartData().legend[1].label }}</text>
+                    <rect x="90" y="45" [attr.width]="200" height="50" fill="white" stroke="#e0e0e0" stroke-width="1" rx="4"/>
+                    <ng-container *ngFor="let item of cd.config.legend; let i = index">
+                      <line [attr.x1]="100" [attr.y1]="60 + i * 20" [attr.x2]="120" [attr.y2]="60 + i * 20" [attr.stroke]="item.color" stroke-width="3"/>
+                      <text [attr.x]="125" [attr.y]="64 + i * 20" fill="#333" font-size="12" font-family="Arial, sans-serif">{{ item.label }}</text>
+                    </ng-container>
                   </g>
                   
-                  <!-- First line (dynamic color) -->
-                  <polyline 
-                    fill="none" 
-                    [attr.stroke]="currentChartData().legend[0].color" 
-                    stroke-width="2.5" 
-                    points="100,200 140,180 180,240 220,210 260,160 300,230 340,190 380,140 420,250 460,180 500,120 540,220 580,160 620,100 660,200 700,150 740,90 780,190 820,130 860,70"/>
-                  
-                  <!-- Second line (dynamic color) -->
-                  <polyline 
-                    fill="none" 
-                    [attr.stroke]="currentChartData().legend[1].color" 
-                    stroke-width="2.5" 
-                    points="100,210 140,190 180,250 220,220 260,170 300,240 340,200 380,150 420,260 460,190 500,130 540,230 580,170 620,110 660,210 700,160 740,100 780,200 820,140 860,80"/>
-                    
-                  <!-- Data points for better visualization -->
-                  <g [attr.fill]="currentChartData().legend[0].color">
-                    <circle cx="100" cy="200" r="3"/>
-                    <circle cx="180" cy="240" r="3"/>
-                    <circle cx="260" cy="160" r="3"/>
-                    <circle cx="340" cy="190" r="3"/>
-                    <circle cx="420" cy="250" r="3"/>
-                    <circle cx="500" cy="120" r="3"/>
-                    <circle cx="580" cy="160" r="3"/>
-                    <circle cx="660" cy="200" r="3"/>
-                    <circle cx="740" cy="90" r="3"/>
-                    <circle cx="820" cy="130" r="3"/>
-                  </g>
-                  
-                  <g [attr.fill]="currentChartData().legend[1].color">
-                    <circle cx="100" cy="210" r="3"/>
-                    <circle cx="180" cy="250" r="3"/>
-                    <circle cx="260" cy="170" r="3"/>
-                    <circle cx="340" cy="200" r="3"/>
-                    <circle cx="420" cy="260" r="3"/>
-                    <circle cx="500" cy="130" r="3"/>
-                    <circle cx="580" cy="170" r="3"/>
-                    <circle cx="660" cy="210" r="3"/>
-                    <circle cx="740" cy="100" r="3"/>
-                    <circle cx="820" cy="140" r="3"/>
-                  </g>
+                  <ng-container *ngIf="chartState().chartData as cd">
+                    <polyline fill="none" [attr.stroke]="cd.config.legend[0].color" stroke-width="2.5" [attr.points]="getPolylinePoints(cd.data, 'value')"/>
+                    <polyline fill="none" [attr.stroke]="cd.config.legend[1].color" stroke-width="2.5" [attr.points]="getPolylinePoints(cd.data, 'predictedValue')"/>
+                  </ng-container>
                 </svg>
               </div>
               
               <!-- X-axis labels -->
-              <div class="chart-x-axis">
-                <span class="x-axis-label">2024-04-17</span>
-                <span class="x-axis-label">2024-04-25</span>
-                <span class="x-axis-label">2024-05-03</span>
-                <span class="x-axis-label">2024-05-11</span>
-                <span class="x-axis-label">2024-05-19</span>
-                <span class="x-axis-label">2024-05-27</span>
-                <span class="x-axis-label">2024-06-01</span>
+              <div class="chart-x-axis" *ngIf="chartState().chartData as cd">
+                <span class="x-axis-label" *ngFor="let t of getXAxisLabels(cd.data)">{{ t }}</span>
               </div>
             </div>
           </div>
