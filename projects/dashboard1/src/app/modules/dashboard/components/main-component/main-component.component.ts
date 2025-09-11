@@ -23,6 +23,8 @@ export class MainComponentComponent implements OnInit {
   
   // Chart state management
   activeChartTab = signal<'general' | 'anomaly' | 'anomaly-ai'>('general');
+  selectedMeterId = signal<number | null>(null);
+  selectedMeterName = signal<string | null>(null);
   
 
   // Computed signals for statistics
@@ -47,7 +49,7 @@ export class MainComponentComponent implements OnInit {
 
   // Chart data for different tabs
   generalChartData = computed(() => ({
-    title: 'Tổng quát',
+    title: `Biểu đồ lưu lượng${this.selectedMeterName() ? ` - ${this.selectedMeterName()}` : ''}`,
     subtitle: 'Original vs Reconstructed Flow (2024-04-17 to 2024-06-01)',
     legend: [
       { key: 'original', label: 'Original Flow', color: '#4285f4' },
@@ -58,7 +60,7 @@ export class MainComponentComponent implements OnInit {
   }));
 
   anomalyChartData = computed(() => ({
-    title: 'Hiển thị bất thường',
+    title: `Phân tích bất thường${this.selectedMeterName() ? ` - ${this.selectedMeterName()}` : ''}`,
     subtitle: 'Anomaly Detection Results (2024-04-17 to 2024-06-01)',
     legend: [
       { key: 'normal', label: 'Normal Flow', color: '#4caf50' },
@@ -69,7 +71,7 @@ export class MainComponentComponent implements OnInit {
   }));
 
   anomalyAiChartData = computed(() => ({
-    title: 'Hiển thị bất thường - AI',
+    title: `Phân tích AI${this.selectedMeterName() ? ` - ${this.selectedMeterName()}` : ''}`,
     subtitle: 'AI-Enhanced Anomaly Detection (2024-04-17 to 2024-06-01)',
     legend: [
       { key: 'predicted', label: 'AI Predicted', color: '#9c27b0' },
@@ -146,4 +148,76 @@ export class MainComponentComponent implements OnInit {
     return this.activeChartTab() === tab;
   }
 
+  // Meter selection
+  selectMeter(item: DashBoardData): void {
+    // Cập nhật trạm được chọn
+    this.selectedMeterId.set(item.meter_data.id);
+    this.selectedMeterName.set(item.meter_data.name);
+
+    // Tạo dữ liệu mới cho trạm được chọn
+    this.updateChartDataForMeter(item);
+  }
+
+  // Kiểm tra trạm đang được chọn
+  isMeterSelected(item: DashBoardData): boolean {
+    return this.selectedMeterId() === item.meter_data.id;
+  }
+
+  // Cập nhật dữ liệu biểu đồ cho trạm được chọn
+  private updateChartDataForMeter(item: DashBoardData): void {
+    // Tạo dữ liệu ngẫu nhiên nhưng có quy luật cho trạm
+    const baseValue = 15 + (item.meter_data.id % 10) * 2; // Giá trị cơ bản dựa trên ID
+    const variance = item.anomaly_count > 0 ? 8 : 4; // Độ biến thiên lớn hơn nếu có bất thường
+
+    // Cập nhật các điểm dữ liệu
+    const points = Array.from({ length: 27 }, (_, i) => {
+      const x = 70 + i * 30;
+      const noise = (Math.random() - 0.5) * variance;
+      const trend = Math.sin(i * 0.2) * variance;
+      const y = 200 - (baseValue + noise + trend) * 5;
+      return `${x},${Math.round(y)}`;
+    });
+
+    // Cập nhật dữ liệu cho từng loại biểu đồ
+    this.updateChartPoints(points.join(' '));
+  }
+
+  // Cập nhật điểm dữ liệu cho tất cả các loại biểu đồ
+  private updateChartPoints(basePoints: string): void {
+    const offsetPoints = basePoints.split(' ').map(point => {
+      const [x, y] = point.split(',').map(Number);
+      return `${x},${y + 10}`;
+    }).join(' ');
+
+    // Cập nhật các signal computed (sẽ tự động cập nhật giao diện)
+    this.generalChartData = computed(() => ({
+      ...this.generalChartData(),
+      originalPoints: basePoints,
+      reconstructedPoints: offsetPoints
+    }));
+
+    this.anomalyChartData = computed(() => ({
+      ...this.anomalyChartData(),
+      originalPoints: basePoints,
+      reconstructedPoints: this.addAnomalySpikes(basePoints)
+    }));
+
+    this.anomalyAiChartData = computed(() => ({
+      ...this.anomalyAiChartData(),
+      originalPoints: basePoints,
+      reconstructedPoints: this.addAnomalySpikes(basePoints, true)
+    }));
+  }
+
+  // Thêm các điểm bất thường vào dữ liệu
+  private addAnomalySpikes(points: string, isAI: boolean = false): string {
+    return points.split(' ').map((point, i) => {
+      const [x, y] = point.split(',').map(Number);
+      if (i % 7 === 3) { // Tạo spike định kỳ
+        const spikeHeight = isAI ? 40 : 80;
+        return `${x},${y - spikeHeight}`;
+      }
+      return point;
+    }).join(' ');
+  }
 }

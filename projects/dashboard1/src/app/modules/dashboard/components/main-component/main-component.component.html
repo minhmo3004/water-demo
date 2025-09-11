@@ -64,8 +64,8 @@
           <table class="data-table">
             <tbody>
               <tr *ngFor="let item of filteredData(); trackBy: trackByFn">
-                <td class="station-name">
-                  <span class="station-text">
+                <td class="station-name" (click)="selectMeter(item)">
+                  <span class="station-text" [class.active]="isMeterSelected(item)">
                     {{ item.meter_data.name }}
                   </span>
                 </td>
@@ -90,7 +90,7 @@
       <div class="detail-header">
         <!-- Title Row -->
         <div class="header-title-row">
-          <h3 class="detail-title">Văn Đẩu 8</h3>
+          <h3 class="detail-title">{{ selectedMeterName() || 'Chọn trạm để xem chi tiết' }}</h3>
         </div>
         
         <!-- Tabs Row -->

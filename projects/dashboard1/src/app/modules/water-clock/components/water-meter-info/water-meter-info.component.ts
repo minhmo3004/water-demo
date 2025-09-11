@@ -40,18 +40,48 @@ export class WaterMeterInfoComponent implements OnInit {
 
   constructor(private router: Router) {}
 
-  // Mock data giống như trong hình
-  private mockData: WaterMeter[] = [
-    { id: '1', name: 'Name', address: 'Address', status: 'Normal', joinDate: '03/10/2022', anomalyDetected: 2 },
-    { id: '2', name: 'Name', address: 'Address', status: 'Normal', joinDate: '03/10/2022', anomalyDetected: 0 },
-    { id: '3', name: 'Name', address: 'Address', status: 'Normal', joinDate: '03/10/2022', anomalyDetected: 1 },
-    { id: '4', name: 'Name', address: 'Address', status: 'Normal', joinDate: '03/10/2022', anomalyDetected: 0 },
-    { id: '5', name: 'Name', address: 'Address', status: 'Normal', joinDate: '03/10/2022', anomalyDetected: 3 },
-    { id: '6', name: 'Name', address: 'Address', status: 'On fixing', joinDate: '03/10/2022', anomalyDetected: 1 },
-    { id: '7', name: 'Name', address: 'Address', status: 'Anomaly detected', joinDate: '03/10/2022', anomalyDetected: 5 },
-    { id: '8', name: 'Name', address: 'Address', status: 'Normal', joinDate: '03/10/2022', anomalyDetected: 0 },
-    { id: '9', name: 'Name', address: 'Address', status: 'Normal', joinDate: '03/10/2022', anomalyDetected: 2 },
-  ];
+  // Tạo mock data chuyên nghiệp và thực tế hơn
+  private generateMockData(total: number = 40): WaterMeter[] {
+    const names = [
+      'Văn Đẩu 8','Văn Đẩu 9','Văn Đẩu 10','Hoà Khánh 1','Hoà Khánh 2',
+      'Liên Chiểu 1','Liên Chiểu 2','Thanh Khê 1','Thanh Khê 2','Sơn Trà 1',
+      'Sơn Trà 2','Ngũ Hành Sơn 1','Ngũ Hành Sơn 2','Hải Châu 1','Hải Châu 2',
+      'Cẩm Lệ 1','Cẩm Lệ 2','Hoà Vang 1','Hoà Vang 2','Hoà Tiến 1'
+    ];
+    const streets = [
+      'Nguyễn Huệ','Lê Lợi','Đồng Khởi','Nguyễn Du','Pasteur',
+      'Hai Bà Trưng','Lê Duẩn','Tôn Đức Thắng','Phan Chu Trinh','Trần Phú'
+    ];
+    const statuses: Array<WaterMeter['status']> = ['Normal','On fixing','Anomaly detected'];
+
+    const pad = (n: number) => (n < 10 ? `0${n}` : `${n}`);
+    const randomDate = (): string => {
+      const start = new Date(2021, 0, 1).getTime();
+      const end = new Date(2024, 11, 31).getTime();
+      const d = new Date(start + Math.random() * (end - start));
+      return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+    };
+
+    const items: WaterMeter[] = Array.from({ length: total }, (_, i) => {
+      const name = names[i % names.length] + ` - ${pad((i % 50) + 1)}`;
+      const address = `${Math.floor(Math.random() * 200) + 1} ${streets[i % streets.length]}, Đà Nẵng`;
+      const status = statuses[Math.floor(Math.random() * statuses.length)];
+      const anomalyDetected = status === 'Anomaly detected' ? Math.floor(Math.random() * 6) + 1 : Math.floor(Math.random() * 2);
+      return {
+        id: String(i + 1),
+        name,
+        address,
+        status,
+        joinDate: randomDate(),
+        anomalyDetected
+      };
+    });
+
+    return items;
+  }
+
+  // Dữ liệu mock được sinh tự động
+  private mockData: WaterMeter[] = this.generateMockData(40);
 
   ngOnInit(): void {
     this.waterMeters.set(this.mockData);
@@ -77,9 +107,9 @@ export class WaterMeterInfoComponent implements OnInit {
     let filtered = meters.filter(meter => {
       if (!this.isValidWaterMeter(meter)) return false;
       
+      // Chỉ tìm theo TÊN như yêu cầu
       const matchesSearch = !currentFilter.searchTerm || 
-        meter.name.toLowerCase().includes(currentFilter.searchTerm.toLowerCase()) ||
-        meter.address.toLowerCase().includes(currentFilter.searchTerm.toLowerCase());
+        meter.name.toLowerCase().includes(currentFilter.searchTerm.toLowerCase());
         
       const matchesStatus = !currentFilter.statusFilter || 
         meter.status === currentFilter.statusFilter;
@@ -92,6 +122,18 @@ export class WaterMeterInfoComponent implements OnInit {
 
   onFilterChange(): void {
     this.onSearch();
+  }
+
+  // Debounce cho thanh tìm kiếm để UX mượt hơn
+  private searchTimeout: any;
+  onSearchTermChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const value = target?.value ?? '';
+    this.filter.update(curr => ({ ...curr, searchTerm: value }));
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+    this.searchTimeout = setTimeout(() => this.onSearch(), 250);
   }
 
   onSelectAll(): void {

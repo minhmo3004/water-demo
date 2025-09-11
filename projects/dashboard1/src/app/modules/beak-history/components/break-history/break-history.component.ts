@@ -40,107 +40,48 @@ export class BreakHistoryComponent implements OnInit {
 
   constructor(private router: Router) {}
 
-  private mockData: BreakHistory[] = [
-    { 
-      id: '1', 
-      clock: 'Name', 
-      address: 'Address', 
-      status: 'On fixing', 
-      date: '03/10/2022',
-      break: 2,
-      pipeMaterial: 'HDPE',
-      pipeLength: 1000,
-      latestRepair: '03/10/2022'
-    },
-    { 
-      id: '2', 
-      clock: 'Name', 
-      address: 'Address', 
-      status: 'Normal', 
-      date: '03/10/2022',
-      break: 1,
-      pipeMaterial: 'HDPE',
-      pipeLength: 1000,
-      latestRepair: '03/10/2022'
-    },
-    { 
-      id: '3', 
-      clock: 'Name', 
-      address: 'Address', 
-      status: 'Normal', 
-      date: '03/10/2022',
-      break: 0,
-      pipeMaterial: 'PVC',
-      pipeLength: 800,
-      latestRepair: '15/09/2022'
-    },
-    { 
-      id: '4', 
-      clock: 'Name', 
-      address: 'Address', 
-      status: 'Normal', 
-      date: '03/10/2022',
-      break: 1,
-      pipeMaterial: 'HDPE',
-      pipeLength: 1200,
-      latestRepair: '28/09/2022'
-    },
-    { 
-      id: '5', 
-      clock: 'Name', 
-      address: 'Address', 
-      status: 'Normal', 
-      date: '03/10/2022',
-      break: 3,
-      pipeMaterial: 'Steel',
-      pipeLength: 900,
-      latestRepair: '10/10/2022'
-    },
-    { 
-      id: '6', 
-      clock: 'Name', 
-      address: 'Address', 
-      status: 'On fixing', 
-      date: '03/10/2022',
-      break: 1,
-      pipeMaterial: 'HDPE',
-      pipeLength: 1100,
-      latestRepair: '05/10/2022'
-    },
-    { 
-      id: '7', 
-      clock: 'Name', 
-      address: 'Address', 
-      status: 'Anomaly detected', 
-      date: '03/10/2022',
-      break: 4,
-      pipeMaterial: 'PVC',
-      pipeLength: 750,
-      latestRepair: '01/10/2022'
-    },
-    { 
-      id: '8', 
-      clock: 'Name', 
-      address: 'Address', 
-      status: 'Normal', 
-      date: '03/10/2022',
-      break: 0,
-      pipeMaterial: 'HDPE',
-      pipeLength: 1300,
-      latestRepair: '20/09/2022'
-    },
-    { 
-      id: '9', 
-      clock: 'Name', 
-      address: 'Address', 
-      status: 'Normal', 
-      date: '03/10/2022',
-      break: 2,
-      pipeMaterial: 'Steel',
-      pipeLength: 950,
-      latestRepair: '12/10/2022'
-    },
-  ];
+  // Sinh mock data thực tế, đa dạng và ổn định
+  private generateMockData(total: number = 60): BreakHistory[] {
+    const names = [
+      'Văn Đẩu 8','Văn Đẩu 9','Văn Đẩu 10','Hoà Khánh 1','Hoà Khánh 2',
+      'Liên Chiểu 1','Liên Chiểu 2','Thanh Khê 1','Thanh Khê 2','Sơn Trà 1',
+      'Sơn Trà 2','Ngũ Hành Sơn 1','Ngũ Hành Sơn 2','Hải Châu 1','Hải Châu 2',
+      'Cẩm Lệ 1','Cẩm Lệ 2','Hoà Vang 1','Hoà Vang 2','Hoà Tiến 1'
+    ];
+    const streets = [
+      'Nguyễn Huệ','Lê Lợi','Đồng Khởi','Nguyễn Du','Pasteur',
+      'Hai Bà Trưng','Lê Duẩn','Tôn Đức Thắng','Phan Chu Trinh','Trần Phú'
+    ];
+    const materials = ['HDPE','PVC','Steel','Ductile iron'];
+    const statuses: Array<BreakHistory['status']> = ['Normal','On fixing','Anomaly detected'];
+    const pad = (n: number) => (n < 10 ? `0${n}` : `${n}`);
+    const randomDate = (): string => {
+      const start = new Date(2022, 0, 1).getTime();
+      const end = new Date(2025, 11, 31).getTime();
+      const d = new Date(start + Math.random() * (end - start));
+      return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+    };
+
+    return Array.from({ length: total }, (_, i) => {
+      const clock = names[i % names.length] + ` - ${pad((i % 50) + 1)}`;
+      const address = `${Math.floor(Math.random() * 200) + 1} ${streets[i % streets.length]}, Đà Nẵng`;
+      const status = statuses[Math.floor(Math.random() * statuses.length)];
+      const breaks = status === 'Anomaly detected' ? Math.floor(Math.random() * 4) + 2 : Math.floor(Math.random() * 2);
+      return {
+        id: String(i + 1),
+        clock,
+        address,
+        status,
+        date: randomDate(),
+        break: breaks,
+        pipeMaterial: materials[i % materials.length],
+        pipeLength: 700 + (i % 10) * 50,
+        latestRepair: randomDate()
+      } as BreakHistory;
+    });
+  }
+
+  private mockData: BreakHistory[] = this.generateMockData(60);
 
   ngOnInit(): void {
     this.loadData();
@@ -164,10 +105,9 @@ export class BreakHistoryComponent implements OnInit {
     // Apply search filter
     if (currentFilter.searchTerm) {
       const searchTerm = currentFilter.searchTerm.toLowerCase();
+      // Yêu cầu: chỉ tìm theo TÊN (clock)
       filtered = filtered.filter(history =>
-        history.clock.toLowerCase().includes(searchTerm) ||
-        history.address.toLowerCase().includes(searchTerm) ||
-        history.status.toLowerCase().includes(searchTerm)
+        history.clock.toLowerCase().includes(searchTerm)
       );
     }
 
@@ -178,6 +118,18 @@ export class BreakHistoryComponent implements OnInit {
 
     this.filteredHistories.set(filtered);
     this.updateSelectAllState();
+  }
+
+  // Debounce tìm kiếm theo tên để UX mượt mà
+  private searchTimeout: any;
+  onSearchTermChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const value = target?.value ?? '';
+    this.filter.update(f => ({ ...f, searchTerm: value }));
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+    this.searchTimeout = setTimeout(() => this.applyFilters(), 250);
   }
 
   onSelectAll(): void {
