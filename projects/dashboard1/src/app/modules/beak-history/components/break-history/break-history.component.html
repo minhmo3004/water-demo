@@ -26,10 +26,10 @@
         [(ngModel)]="filter().statusFilter"
         (change)="onFilterChange()"
       >
-        <option value="">Filter by Status</option>
-        <option value="Normal">Normal</option>
-        <option value="On fixing">On fixing</option>
-        <option value="Anomaly detected">Anomaly detected</option>
+        <option value="">Lọc theo trạng thái</option>
+        <option value="Normal">Bình thường</option>
+        <option value="On fixing">Đang sửa chữa</option>
+        <option value="Anomaly detected">Phát hiện bất thường</option>
       </select>
     </div>
     
@@ -53,11 +53,11 @@
                 class="table-checkbox"
               >
             </th>
-            <th>Clock</th>
-            <th>Address</th>
-            <th>Status</th>
-            <th>Date</th>
-            <th>Detail</th>
+            <th>Tên trạm</th>
+            <th>Địa chỉ</th>
+            <th>Trạng thái</th>
+            <th>Ngày</th>
+            <th>Chi tiết</th>
           </tr>
         </thead>
       </table>
@@ -86,7 +86,7 @@
               <td class="address-column">{{ history.address }}</td>
               <td class="status-column">
                 <span class="status-badge" [ngClass]="getStatusClass(history.status)">
-                  {{ history.status }}
+                  {{ getStatusText(history.status) }}
                 </span>
               </td>
               <td class="date-column">{{ history.date }}</td>
@@ -117,17 +117,17 @@
                   <div class="detail-body">
                     <div class="detail-info-grid">
                       <div class="detail-item">
-                        <span class="detail-label">Name:</span>
+                        <span class="detail-label">Tên trạm:</span>
                         <span class="detail-value">{{ history.clock }}</span>
                       </div>
 
                       <div class="detail-item">
-                        <span class="detail-label">Address:</span>
+                        <span class="detail-label">Địa chỉ:</span>
                         <span class="detail-value">{{ history.address }}</span>
                       </div>
 
                       <div class="detail-item">
-                        <span class="detail-label">Status:</span>
+                        <span class="detail-label">Trạng thái:</span>
                         <span class="detail-value">
                           <span class="status-badge" [ngClass]="getStatusClass(history.status)">
                             {{ history.status }}
@@ -136,22 +136,22 @@
                       </div>
 
                       <div class="detail-item">
-                        <span class="detail-label">Break:</span>
+                        <span class="detail-label">Vỡ:</span>
                         <span class="detail-value break-count">{{ history.break }} (time)</span>
                       </div>
 
                       <div class="detail-item">
-                        <span class="detail-label">Pipe material:</span>
+                        <span class="detail-label">Chất liệu ống:</span>
                         <span class="detail-value">{{ history.pipeMaterial }}</span>
                       </div>
 
                       <div class="detail-item">
-                        <span class="detail-label">Pipe length:</span>
+                        <span class="detail-label">Chiều dài ống:</span>
                         <span class="detail-value">{{ history.pipeLength }} (m)</span>
                       </div>
 
                       <div class="detail-item">
-                        <span class="detail-label">Latest repair:</span>
+                        <span class="detail-label">Ngày sửa chữa gần nhất:</span>
                         <span class="detail-value date-value">{{ history.latestRepair }}</span>
                       </div>
                     </div>

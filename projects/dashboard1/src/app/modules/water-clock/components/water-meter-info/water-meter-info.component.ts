@@ -203,6 +203,20 @@ export class WaterMeterInfoComponent implements OnInit {
     }
   }
 
+  // Hiển thị tiếng Việt cho trạng thái trong bảng
+  getStatusText(status: string): string {
+    switch (status) {
+      case 'Normal':
+        return 'Bình thường';
+      case 'On fixing':
+        return 'Đang sửa chữa';
+      case 'Anomaly detected':
+        return 'bất thường';
+      default:
+        return status;
+    }
+  }
+
   trackByMeterId(index: number, meter: WaterMeter): string {
     return meter.id;
   }

@@ -179,6 +179,20 @@ export class BreakHistoryComponent implements OnInit {
     }
   }
 
+  // Hiển thị tiếng Việt cho trạng thái trong bảng
+  getStatusText(status: string): string {
+    switch (status) {
+      case 'Normal':
+        return 'Bình thường';
+      case 'On fixing':
+        return 'Đang sửa chữa';
+      case 'Anomaly detected':
+        return 'bất thường';
+      default:
+        return status;
+    }
+  }
+
   trackByHistoryId(index: number, history: BreakHistory): string {
     return history.id;
   }

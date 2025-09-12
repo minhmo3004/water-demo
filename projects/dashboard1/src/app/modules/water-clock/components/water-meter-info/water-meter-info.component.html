@@ -26,10 +26,10 @@
         [(ngModel)]="filter().statusFilter"
         (change)="onFilterChange()"
       >
-        <option value="">Filter by Status</option>
-        <option value="Normal">Normal</option>
-        <option value="On fixing">On fixing</option>
-        <option value="Anomaly detected">Anomaly detected</option>
+        <option value="">Lọc theo trạng thái</option>
+        <option value="Normal">Bình thường</option>
+        <option value="On fixing">Đang sửa chữa</option>
+        <option value="Anomaly detected">Phát hiện bất thường</option>
       </select>
     </div>
     
@@ -53,11 +53,11 @@
                 class="table-checkbox"
               >
             </th>
-            <th>Name</th>
-            <th>Address</th>
-            <th>Status</th>
-            <th>Join date</th>
-            <th>Actions</th>
+            <th>Tên trạm</th>
+            <th>Địa chỉ</th>
+            <th>Trạng thái</th>
+            <th>Ngày tham gia</th>
+            <th>Hành động</th>
           </tr>
         </thead>
       </table>
@@ -86,7 +86,7 @@
               <td class="address-column">{{ meter.address }}</td>
               <td class="status-column">
                 <span class="status-badge" [ngClass]="getStatusClass(meter.status)">
-                  {{ meter.status }}
+                  {{ getStatusText(meter.status) }}
                 </span>
               </td>
               <td class="date-column">{{ meter.joinDate }}</td>
@@ -116,17 +116,17 @@
                   <div class="detail-body">
                     <div class="detail-info-grid">
                       <div class="detail-item">
-                        <span class="detail-label">Name:</span>
+                        <span class="detail-label">Tên trạm:</span>
                         <span class="detail-value">{{ meter.name }}</span>
                       </div>
                       
                       <div class="detail-item">
-                        <span class="detail-label">Address:</span>
+                        <span class="detail-label">Địa chỉ:</span>
                         <span class="detail-value">{{ meter.address }}</span>
                       </div>
                       
                       <div class="detail-item">
-                        <span class="detail-label">Status:</span>
+                        <span class="detail-label">Trạng thái:</span>
                         <span class="detail-value">
                           <span class="status-badge" [ngClass]="getStatusClass(meter.status)">
                             {{ meter.status }}
@@ -135,7 +135,7 @@
                       </div>
                       
                       <div class="detail-item">
-                        <span class="detail-label">Anomaly Detected:</span>
+                        <span class="detail-label">Phát hiện bất thường:</span>
                         <span class="detail-value anomaly-count">{{ meter.anomalyDetected || 0 }}</span>
                       </div>
                     </div>
