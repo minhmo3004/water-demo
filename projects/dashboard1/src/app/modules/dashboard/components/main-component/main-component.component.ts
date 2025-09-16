@@ -7,11 +7,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChartDataService } from '../../../../core/services/chart-data.service';
 import { ChartType } from '../../../../core/models/chart-data.interface';
+import { SearchComponent } from '../search/search.component';
 
 @Component({
   selector: 'app-main-component',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SearchComponent],
   templateUrl: './main-component.component.html',
   styleUrls: ['./main-component.component.scss']
 })
@@ -64,8 +65,23 @@ export class MainComponentComponent implements OnInit {
     });
   }
 
-  onSearchChange(event: any) {
-    this.searchTerm.set(event.target.value);
+  onSearchChange(event: unknown): void {
+    const isString = (v: unknown): v is string => typeof v === 'string';
+    if (isString(event)) {
+      this.searchTerm.set(event);
+      return;
+    }
+    // fallback: trường hợp event từ native input
+    const isInputEvent = (e: unknown): e is { target: { value?: unknown } } =>
+      !!e && typeof e === 'object' && 'target' in (e as Record<string, unknown>);
+    if (isInputEvent(event)) {
+      const value = (event as { target: { value?: unknown } }).target?.value;
+      if (isString(value)) {
+        this.searchTerm.set(value);
+        return;
+      }
+    }
+    this.searchTerm.set('');
   }
 
   getStatusText(status: number): string {

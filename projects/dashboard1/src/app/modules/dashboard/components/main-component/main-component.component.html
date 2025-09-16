@@ -35,15 +35,10 @@
         
         
         <div class="search-container">
-            <div class="search-box">
-              <i class="fas fa-search search-icon"></i>
-              <input
-                type="text"
-                placeholder="Search"
-                (input)="onSearchChange($event)"
-                class="search-input"
-              />
-            </div>
+            <app-search
+              [placeholder]="'Tìm theo tên hoặc địa chỉ'"
+              (searchChange)="onSearchChange($event)">
+            </app-search>
         </div>
         
       </div>
